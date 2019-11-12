@@ -329,16 +329,15 @@ export default {
       this.dialogType = "edit";
       this.activeName = "first";
       this.dialogVisible = true;
+      scope.row.roleIds = [];
       this.user=deepClone(scope.row);
-      this.user.roleIds=[];
       this.$nextTick(() => {
         this.$refs.tree.setCheckedKeys([this.user.deptid]);
         if (this.user.roles) {
-          let roleIds = [];
+          let roleIds = this.user.roleIds;
           this.user.roles.forEach(role => {
             roleIds.push(role.id);
           });
-          this.user.roleIds = roleIds;
         }
       });
     },
