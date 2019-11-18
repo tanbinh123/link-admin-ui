@@ -1,7 +1,7 @@
 
-import { constantRoutes, asyncRoutes } from '@/router'
+import { constantRoutes } from '@/router'
 import store from '@/store'
-import { deepClone } from '@/utils'
+import Layout from '@/layout'
 
 const state = {
   routes: [],
@@ -18,53 +18,34 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }) {
     return new Promise(resolve => {
-      var accessedRoutes = deepClone(asyncRoutes)
-      accessedRoutes = filterAsyncRoutes(accessedRoutes)
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      const asyncRouter = filterAsyncRouter(store.getters.menus)
+      asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
+      commit('SET_ROUTES', asyncRouter)
+      resolve(asyncRouter)
     })
   }
 }
 
-/**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(route) {
-  const menus = store.getters.menus
-  if (route.path) {
-    // eslint-disable-next-line eqeqeq
-    if (route.path == '*') {
-      return true
-    }
-    for (var menu of menus) {
-      // eslint-disable-next-line eqeqeq
-      if (route.path == menu.url) {
-        return true
+const filterAsyncRouter = (routers) => { // 遍历后台传来的路由字符串，转换为组件对象
+  const accessedRouters = routers.filter(router => {
+    if (router.component) {
+      if (router.component === 'Layout') { // Layout组件特殊处理
+        router.component = Layout
+      } else {
+        const component = router.component
+        router.component = loadView(component)
       }
     }
-  }
-  return false
+    if (router.children && router.children.length) {
+      router.children = filterAsyncRouter(router.children)
+    }
+    return true
+  })
+  return accessedRouters
 }
 
-/**
- * Filter asynchronous routing tables by recursion
- * @param routes asyncRoutes
- * @param roles
- */
-function filterAsyncRoutes(routes) {
-  const res = []
-  routes.forEach(route => {
-    if (hasPermission(route)) {
-      if (route.children) {
-        route.children = filterAsyncRoutes(route.children)
-      }
-      res.push(route)
-    }
-  })
-
-  return res
+const loadView = (view) => { // 路由懒加载
+  return () => import(`@/views${view}`)
 }
 
 export default {
