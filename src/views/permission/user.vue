@@ -21,9 +21,9 @@
           <el-select v-model="listQuery.state" placeholder="用户状态" clearable>
             <el-option
               v-for="item in stateOptions"
-              :key="item.key"
+              :key="item.value"
               :label="item.label"
-              :value="item.key"
+              :value="item.value"
             />
           </el-select>
         </el-col>
@@ -78,12 +78,12 @@
                 <span>{{ scope.$index+(listQuery.page - 1) * listQuery.limit + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="账号" width="120" />
-            <el-table-column prop="vserName" label="真实姓名" width="90" />
-            <el-table-column prop="deptName" label="部门" width="120" />
-            <el-table-column prop="mobile" label="手机" width="180" />
+            <el-table-column prop="name" label="账号" width="100" />
+            <el-table-column prop="vserName" label="真实姓名" width="100" />
+            <el-table-column prop="mobile" label="手机" width="150" />
             <!-- <el-table-column prop="email" label="邮箱" width="180"></el-table-column> -->
-            <el-table-column prop="roleName" label="角色" width="150" :formatter="formatRole" />
+            <el-table-column prop="deptName" label="部门/岗位" width="210" :formatter="formatDept" />
+            <el-table-column prop="roleName" label="角色" width="180" :formatter="formatRole" />
 
             <el-table-column label="禁用/启用" width="85">
               <template slot-scope="scope">
@@ -117,19 +117,34 @@
       </el-row>
     </div>
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form :model="user" label-width="80px" label-position="left" style="height: 480px;">
-        <el-tabs v-model="activeName">
-          <el-tab-pane label="用户信息" name="first">
-            <el-form-item label="账号">
+      <el-form ref="form" :model="user" :rules="rules" label-width="80px" label-position="right">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="账号" prop="name">
               <el-input v-model="user.name" placeholder="账号" />
             </el-form-item>
-            <el-form-item label="密码">
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="密码" prop="password">
               <el-input v-model="user.password" placeholder="密码" />
             </el-form-item>
-            <el-form-item label="真实姓名">
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="真实姓名" prop="vserName">
               <el-input v-model="user.vserName" placeholder="真实姓名" />
             </el-form-item>
-            <el-form-item label="部门">
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号">
+              <el-input v-model="user.mobile" placeholder="手机号" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="部门" prop="deptid">
               <treeselect
                 v-model="user.deptid"
                 :options="departments"
@@ -137,47 +152,61 @@
                 placeholder="选择部门"
               />
             </el-form-item>
-            <el-form-item label="手机号">
-              <el-input v-model="user.mobile" placeholder="手机号" />
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="岗位">
+              <el-autocomplete
+                v-model="user.jobName"
+                :fetch-suggestions="queryJobSearch"
+                placeholder="请输入内容"
+                style="width:100%"
+                @select="handleJobSelect"
+              >
+                <template slot-scope="{ item }">
+                  <div class="name">{{ item.name }}</div>
+                </template>
+              </el-autocomplete>
             </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="邮箱">
               <el-input v-model="user.email" placeholder="邮箱" />
             </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="user.state" style="width: 140px" class="filter-item">
-                <el-option
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="state">
+              <el-radio-group v-model="user.state">
+                <el-radio
                   v-for="item in stateOptions"
-                  :key="item.key"
-                  :label="item.label"
-                  :value="item.key"
-                />
+                  :key="item.value"
+                  :label="item.value"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="角色">
+              <el-select v-model="user.roleIds" multiple placeholder="请选择" style="width:100%">
+                <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
-          </el-tab-pane>
-          <el-tab-pane label="角色" name="second">
-            <el-checkbox-group v-model="user.roleIds">
-              <el-checkbox
-                v-for="item in roles"
-                :key="item.id"
-                :label="item.id"
-                style="padding-top:20px"
-              >{{ item.name }}</el-checkbox>
-            </el-checkbox-group>
-          </el-tab-pane>
-        </el-tabs>
+          </el-col>
+        </el-row>
       </el-form>
-
-      <div style="text-align:right;">
+      <span slot="footer" class="dialog-footer">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
         <el-button type="primary" @click="confirmUser">确定</el-button>
-      </div>
+      </span>
     </el-dialog>
   </div>
 </template>
 <script>
-// import the component
 import Treeselect from '@riophae/vue-treeselect'
-// import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import {
@@ -187,18 +216,21 @@ import {
   updateState
 } from '@/api/permission/user'
 import { departments } from '@/api/permission/department'
+import { jobs } from '@/api/permission/job'
 import { roles } from '@/api/permission/role'
 import { deepClone } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 const defaultUser = {
   uid: '',
   name: '',
-  password: '',
+  password: 123456,
   vserName: '',
   mobile: '',
-  state: undefined,
+  state: 1,
   email: '',
   deptid: undefined,
+  jobid: undefined,
+  jobName: '',
   deptName: '',
   roleIds: []
 }
@@ -209,11 +241,6 @@ export default {
   directives: { permission },
   data() {
     return {
-      searchOptions: [
-        { label: '登录名', key: 'name' },
-        { label: '真实姓名', key: 'vserName' },
-        { label: '手机号', key: 'mobile' }
-      ],
       tableKey: 0,
       list: null,
       total: 0,
@@ -229,17 +256,33 @@ export default {
         state: undefined
       },
       searchDeptName: '',
+      stateOptions: [{ label: '禁用', value: 0 }, { label: '启用', value: 1 }],
       user: Object.assign({}, defaultUser),
       defaultProps: {
         children: 'childrens',
         label: 'name'
       },
-      stateOptions: [{ label: '禁用', key: 0 }, { label: '启用', key: 1 }],
       departments: [],
       roles: [],
       activeName: 'first',
       dialogVisible: false,
-      dialogType: 'new'
+      dialogType: 'new',
+      rules: {
+        name: [
+          { required: true, message: '请输入账号', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+        ],
+        vserName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        deptid: [{ required: true, message: '请选择部门', trigger: 'change' }],
+        state: [{ required: true, message: '请选择状态', trigger: 'change' }]
+      }
     }
   },
   watch: {
@@ -247,9 +290,11 @@ export default {
       this.$refs.serchDeptTree.filter(val)
     }
   },
-  created() {
+  created() {},
+  mounted() {
     this.getList()
     this.getDepartments()
+    this.getJobs()
     this.getRoles()
   },
   methods: {
@@ -268,6 +313,9 @@ export default {
     handleSearch() {
       this.getList()
     },
+    formatDept(row, column) {
+      return row.deptName + ' / ' + row.jobName
+    },
     formatRole(row, column) {
       var roleNames = []
       row.roles.forEach(role => {
@@ -277,7 +325,7 @@ export default {
     },
     // 用户状态修改
     handleStateChange(row) {
-      const text = row.state === 1 ? '启用' : '停用'
+      const text = row.state === 1 ? '启用' : '禁用'
       this.$confirm(
         '确认要 [' + text + '] [' + row.name + '] 用户吗?',
         '警告',
@@ -303,7 +351,11 @@ export default {
       const res = await departments()
       const result = res.result
       this.diGuiTree(result)
-      this.departments = [{ id: undefined, name: '部门树', childrens: result }]
+      this.departments = [{ id: 0, name: '部门树', childrens: result }]
+    },
+    async getJobs() {
+      const res = await jobs()
+      this.jobs = res.result
     },
     async getRoles() {
       const res = await roles()
@@ -326,6 +378,23 @@ export default {
         children: node.childrens
       }
     },
+    queryJobSearch(queryString, cb) {
+      var jobs = this.jobs
+      var results = queryString
+        ? jobs.filter(this.createJobFilter(queryString))
+        : jobs
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    createJobFilter(queryString) {
+      return jobs => {
+        return jobs.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+      }
+    },
+    handleJobSelect(item) {
+      this.user.jobid = item.id
+      this.user.jobName = item.name
+    },
     handleCreate() {
       this.dialogType = 'new'
       this.activeName = 'first'
@@ -338,14 +407,12 @@ export default {
       this.dialogVisible = true
       scope.row.roleIds = []
       this.user = deepClone(scope.row)
-      this.$nextTick(() => {
-        if (this.user.roles) {
-          const roleIds = this.user.roleIds
-          this.user.roles.forEach(role => {
-            roleIds.push(role.id)
-          })
-        }
-      })
+      if (this.user.roles) {
+        const roleIds = this.user.roleIds
+        this.user.roles.forEach(role => {
+          roleIds.push(role.id)
+        })
+      }
     },
     async confirmUser() {
       const isEdit = this.dialogType === 'edit'

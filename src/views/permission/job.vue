@@ -2,14 +2,15 @@
   <div class="app-container">
     <div class="filter-container" style="margin-top:20px;">
       <el-input
-        v-model="listQuery.data_type"
-        placeholder="请输入类型/key/value"
+        v-model="listQuery.name"
+        placeholder="岗位名"
         style="width: 200px;"
         class="filter-item"
       />
 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
       <el-button
+        v-permission="['/rest/job/add']"
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
@@ -27,21 +28,33 @@
       style="width: 100%;"
       height="450"
     >
-      <el-table-column width="50">
+      <el-table-column prop="name" label="岗位名" />
+      <el-table-column label="禁用/启用">
         <template slot-scope="scope">
-          <span>{{ scope.$index+(listQuery.page - 1) * listQuery.limit + 1 }}</span>
+          <el-switch
+            v-model="scope.row.state"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleStateChange(scope.row)"
+          />
         </template>
       </el-table-column>
-      <el-table-column prop="data_type" label="类型" />
-      <el-table-column prop="data_key" label="key" />
-      <el-table-column prop="data_value" label="value" />
       <el-table-column prop="sorts" label="排序" />
-      <el-table-column prop="description" label="描述" />
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          <el-button
+            v-permission="['/rest/role/update']"
+            type="text"
+            size="small"
+            @click="handleEdit(scope)"
+          >编辑</el-button>
+          <el-button
+            v-permission="['/rest/role/delete']"
+            type="text"
+            size="small"
+            @click="handleDelete(scope)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,55 +66,55 @@
       @pagination="getList"
     />
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form ref="form" :model="dict" :rules="rules" label-width="80px" label-position="right">
-        <el-form-item label="Type" prop="data_type">
-          <el-input v-model="dict.data_type" placeholder="类型" />
+      <el-form ref="form" :model="job" :rules="rules" label-position="right" label-width="80px">
+        <el-form-item label="岗位名" prop="name">
+          <el-input v-model="job.name" placeholder="岗位名" />
         </el-form-item>
-        <el-form-item label="Key" prop="data_key">
-          <el-input v-model="dict.data_key" placeholder="Key" />
-        </el-form-item>
-        <el-form-item label="Value" prop="data_value">
-          <el-input v-model="dict.data_value" placeholder="Value" />
+        <el-form-item label="状态" prop="state">
+          <el-radio-group v-model="job.state">
+            <el-radio :label="1">启用</el-radio>
+            <el-radio :label="0">禁用</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="排序">
-          <el-input v-model="dict.sorts" placeholder="排序" />
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input
-            v-model="dict.description"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
-            placeholder="描述"
+          <el-input-number
+            v-model.number="job.sorts"
+            :min="0"
+            :max="999"
+            controls-position="right"
+            style="width: 178px;"
           />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
-        <el-button type="primary" @click="confirmDict">确定</el-button>
+        <el-button type="primary" @click="confirmRole">确定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import permission from '@/directive/permission/index.js' // 权限判断指令
 import {
-  dictList,
-  addDict,
-  updateDict,
-  deleteDict
-} from '@/api/permission/dict'
+  jobList,
+  addJob,
+  updateJob,
+  updateState,
+  deleteJob
+} from '@/api/permission/job'
+
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { deepClone } from '@/utils'
-const defaultDict = {
+const defaultJob = {
   id: undefined,
-  data_type: '',
-  data_key: '',
-  data_value: '',
-  sorts: undefined,
-  description: ''
+  name: '',
+  state: 1,
+  sorts: undefined
 }
 export default {
-  name: 'Dict',
+  name: 'Job',
   components: { Pagination },
+  directives: { permission },
   data() {
     return {
       tableKey: 0,
@@ -111,17 +124,17 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        data_type: ''
+        name: ''
       },
-      dict: Object.assign({}, defaultDict),
+      job: Object.assign({}, defaultJob),
       dialogVisible: false,
       dialogType: 'new',
       rules: {
-        data_type: [{ required: true, message: '请输入type', trigger: 'blur' }],
-        data_key: [{ required: true, message: '请输入key', trigger: 'blur' }],
-        data_value: [
-          { required: true, message: '请输入value', trigger: 'blur' }
-        ]
+        name: [
+          { required: true, message: '请输入岗位名', trigger: 'blur' },
+          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+        ],
+        state: [{ required: true, message: '请选择状态', trigger: 'change' }]
       }
     }
   },
@@ -133,7 +146,7 @@ export default {
       this.listLoading = true
       // If the Promise is rejected, the rejected value is thrown.
       try {
-        const res = await dictList(this.listQuery)
+        const res = await jobList(this.listQuery)
         this.listLoading = false
         this.list = res.result.rows
         this.total = res.result.records
@@ -144,22 +157,46 @@ export default {
     handleSearch() {
       this.getList()
     },
+    // 状态修改
+    handleStateChange(row) {
+      const text = row.state === 1 ? '启用' : '停用'
+      this.$confirm(
+        '确认要 [' + text + '] [' + row.name + '] 岗位吗?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(async() => {
+          await updateState({ id: row.id, state: row.state })
+          this.$message({
+            message: text + '成功',
+            type: 'success'
+          })
+        })
+        .catch(err => {
+          console.error(err)
+          row.state = row.state === 0 ? 1 : 0
+        })
+    },
     handleCreate() {
-      this.dict = Object.assign({}, defaultDict)
       this.dialogType = 'new'
       this.dialogVisible = true
     },
-    async handleEdit(scope) {
+    handleEdit(scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
-      this.dict = deepClone(scope.row)
+      this.checkStrictly = true
+      this.job = deepClone(scope.row)
     },
-    async confirmDict() {
+    async confirmRole() {
       const isEdit = this.dialogType === 'edit'
       if (isEdit) {
-        await updateDict(this.dict)
+        await updateJob(this.job)
       } else {
-        await addDict(this.dict)
+        await addJob(this.job)
       }
       this.dialogVisible = false
       this.$message({
@@ -170,13 +207,13 @@ export default {
       this.getList()
     },
     handleDelete({ row }) {
-      this.$confirm('确认删除吗?', '警告', {
+      this.$confirm('确认删除?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async() => {
-          await deleteDict(row.id)
+          await deleteJob(row.id)
           this.$message({
             showClose: true,
             message: '删除成功',

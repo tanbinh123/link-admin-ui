@@ -51,7 +51,7 @@
       </el-row>
     </div>
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'" width="650px">
-      <el-form ref="form" :inline="true" size="small" label-width="80px">
+      <el-form ref="form" :inline="true" :rules="rules" size="small" label-width="80px">
         <el-form-item label="权限类型">
           <el-radio-group v-model="permission.types" size="mini" style="width: 178px">
             <el-radio-button label="0">目录</el-radio-button>
@@ -72,7 +72,7 @@
               v-model="permission.icon"
               style="width: 450px;"
               placeholder="点击选择图标"
-              readonly
+              clearable
             >
               <svg-icon
                 v-if="permission.icon"
@@ -107,7 +107,7 @@
           <el-input v-model="permission.name" placeholder="权限名" />
         </el-form-item>
 
-        <el-form-item v-if="permission.url.toString() !== '2'" label="路由地址" prop="path">
+        <el-form-item label="路由地址">
           <el-input v-model="permission.url" placeholder="路由地址" style="width: 178px;" />
         </el-form-item>
         <el-form-item label="排序">
@@ -146,7 +146,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible=false">取消</el-button>
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
         <el-button type="primary" @click="confirmPermission">确定</el-button>
       </span>
     </el-dialog>
@@ -172,7 +172,7 @@ const defaultPermission = {
   parentId: undefined,
   parentName: '',
   url: '',
-  types: '',
+  types: 0,
   sorts: undefined,
   component_name: '',
   component_path: '',
@@ -195,8 +195,20 @@ export default {
       permissions: [],
       dialogVisible: false,
       dialogType: 'new',
-      typesOptions: [{ label: '菜单', key: 0 }, { label: '按钮', key: 1 }],
-      filterText: ''
+      filterText: '',
+      rules: {
+        types: [
+          { required: true, message: '请选择权限类型', trigger: 'change' }
+        ],
+        name: [
+          { required: true, message: '请输入权限名', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+        ],
+        url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
+        parentId: [
+          { required: true, message: '请选择上级权限', trigger: 'change' }
+        ]
+      }
     }
   },
   watch: {

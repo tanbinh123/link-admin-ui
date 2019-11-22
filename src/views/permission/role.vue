@@ -70,8 +70,14 @@
       @pagination="getList"
     />
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="角色名">
+      <el-form
+        ref="roleForm"
+        :model="role"
+        :rules="rules"
+        label-position="right"
+        label-width="80px"
+      >
+        <el-form-item label="角色名" prop="name">
           <el-input v-model="role.name" placeholder="角色名" />
         </el-form-item>
         <el-form-item label="描述">
@@ -107,7 +113,6 @@
         <el-form-item label="角色名称">{{ role.name }}</el-form-item>
         <el-form-item label="权限范围">
           <el-select v-model="role.data_scope">
-
             <el-option
               v-for="item in dataScopes"
               :key="item.data_key"
@@ -185,7 +190,13 @@ export default {
       permissionsByRole: [],
       dataScopeDialogVisible: false,
       departments: [],
-      dataScopes: []
+      dataScopes: [],
+      rules: {
+        name: [
+          { required: true, message: '请输入角色名', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -323,8 +334,7 @@ export default {
     /** 提交按钮（数据权限） */
     async submitDataScope() {
       if (this.role.id) {
-        this.role.deptIds = this.$refs.deptTree
-          .getCheckedKeys()
+        this.role.deptIds = this.$refs.deptTree.getCheckedKeys()
         await saveDataScope(this.role)
         this.dataScopeDialogVisible = false
         this.$message({
