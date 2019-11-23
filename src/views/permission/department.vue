@@ -31,7 +31,7 @@
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
-                >添加</el-button>
+                >添加子项</el-button>
                 <el-button
                   v-permission="['/rest/department/update']"
                   type="text"
@@ -51,7 +51,13 @@
       </el-row>
     </div>
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form ref="form" :model="department" :rules="rules" label-width="80px" label-position="right">
+      <el-form
+        ref="form"
+        :model="department"
+        :rules="rules"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item label="上级部门" prop="parentId">
           <!-- <span>{{department.parentName}}</span> -->
           <treeselect
@@ -131,7 +137,9 @@ export default {
           { required: true, message: '请输入部门名', trigger: 'blur' },
           { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
         ],
-        parentId: [{ required: true, message: '请选择上级部门', trigger: 'change' }]
+        parentId: [
+          { required: true, message: '请选择上级部门', trigger: 'change' }
+        ]
       }
     }
   },

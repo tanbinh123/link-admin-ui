@@ -87,7 +87,7 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import { formatDateTime } from '@/utils'
 const token = getToken()
 export default {
-  name: 'TikTok',
+  name: 'Upload',
   components: { Pagination },
   data() {
     return {

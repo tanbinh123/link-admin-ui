@@ -31,7 +31,7 @@
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
-                >添加</el-button>
+                >添加子项</el-button>
                 <el-button
                   v-permission="['/rest/permission/update']"
                   type="text"
