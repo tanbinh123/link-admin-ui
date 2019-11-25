@@ -51,7 +51,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import avatarGif from '@/assets/avatar.gif'
+import avatarGif from '@/assets/avatar.png'
 
 export default {
   components: {
