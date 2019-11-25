@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import avatarGif from '@/assets/avatar.png'
+import avatarGif from '@/assets/logo.png'
 export default {
   name: 'SidebarLogo',
   props: {
