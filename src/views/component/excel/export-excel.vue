@@ -45,7 +45,7 @@ import AutoWidthOption from './components/AutoWidthOption'
 import BookTypeOption from './components/BookTypeOption'
 import { formatDateTime } from '@/utils'
 export default {
-  name: 'Excel',
+  name: 'ExportExcel',
   components: { FilenameOption, AutoWidthOption, BookTypeOption },
   data() {
     return {

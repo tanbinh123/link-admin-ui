@@ -1,6 +1,11 @@
 <template>
-  <div class="json-editor">
-    <textarea ref="textarea" />
+  <div style=" height: auto; width: 100%; position: relative;">
+    <div class="json-editor">
+      <textarea ref="textarea" />
+    </div>
+    <div style="margin-top: 10px;">
+      <el-button type="primary" @click="jsonFormat">格式化</el-button>
+    </div>
   </div>
 </template>
 
@@ -33,11 +38,13 @@ export default {
   },
   mounted() {
     this.jsonEditor = CodeMirror.fromTextArea(this.$refs.textarea, {
-      lineNumbers: true,
       mode: 'application/json',
       gutters: ['CodeMirror-lint-markers'],
-      theme: 'rubyblue',
-      lint: true
+      theme: 'default',
+      lint: true,
+      lineNumbers: true,
+      styleActiveLine: true,
+      matchBrackets: true
     })
 
     this.jsonEditor.setValue(JSON.stringify(this.value, null, 2))
@@ -49,24 +56,30 @@ export default {
   methods: {
     getValue() {
       return this.jsonEditor.getValue()
+    },
+    jsonFormat() {
+      if (typeof this.value === 'object') {
+        return
+      }
+      this.jsonEditor.setValue(JSON.stringify(JSON.parse(this.value), null, 2))
     }
   }
 }
 </script>
 
 <style scoped>
-.json-editor{
-  height: 100%;
-  position: relative;
+.json-editor {
+  border: 1px solid #e1e1e1;
+  font-size: 14px;
 }
 .json-editor >>> .CodeMirror {
-  height: auto;
+  height: 460px;
   min-height: 300px;
 }
-.json-editor >>> .CodeMirror-scroll{
+.json-editor >>> .CodeMirror-scroll {
   min-height: 300px;
 }
 .json-editor >>> .cm-s-rubyblue span.cm-string {
-  color: #F08047;
+  color: #f08047;
 }
 </style>

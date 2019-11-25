@@ -50,7 +50,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'" width="650px">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'" width="600px">
       <el-form ref="form" :inline="true" :rules="rules" size="small" label-width="80px">
         <el-form-item label="权限类型">
           <el-radio-group v-model="permission.types" size="mini" style="width: 178px">
@@ -108,17 +108,9 @@
         </el-form-item>
 
         <el-form-item label="路由地址">
-          <el-input v-model="permission.url" placeholder="路由地址" style="width: 178px;" />
+          <el-input v-model="permission.url" placeholder="路由地址" style="width: 450px;" />
         </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number
-            v-model.number="permission.sorts"
-            :min="0"
-            :max="999"
-            controls-position="right"
-            style="width: 178px;"
-          />
-        </el-form-item>
+
         <el-form-item
           v-show="permission.i_frame == false && permission.types.toString() === '1'"
           label="组件名称"
@@ -127,6 +119,15 @@
             v-model="permission.component_name"
             style="width: 178px;"
             placeholder="匹配组件内Name字段"
+          />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number
+            v-model.number="permission.sorts"
+            :min="0"
+            :max="999"
+            controls-position="right"
+            style="width: 178px;"
           />
         </el-form-item>
         <el-form-item

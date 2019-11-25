@@ -29,8 +29,10 @@ const actions = {
 const filterAsyncRouter = (routers) => { // 遍历后台传来的路由字符串，转换为组件对象
   const accessedRouters = routers.filter(router => {
     if (router.component) {
-      if (router.component === 'Layout') { // Layout组件特殊处理
+      if (router.component === 'Layout' && router.root) { // Layout组件特殊处理
         router.component = Layout
+      } else if (router.component === 'Layout') { // 处理多级菜单
+        router.component = routerView()
       } else {
         const component = router.component
         router.component = loadView(component)
@@ -44,6 +46,9 @@ const filterAsyncRouter = (routers) => { // 遍历后台传来的路由字符串
   return accessedRouters
 }
 
+const routerView = () => {
+  return () => import(`@/router/views`)
+}
 const loadView = (view) => { // 路由懒加载
   return () => import(`@/views${view}`)
 }

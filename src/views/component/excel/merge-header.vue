@@ -5,7 +5,6 @@
 
     <el-table
       ref="multipleTable"
-      v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
       border
@@ -37,7 +36,7 @@
       <el-table-column align="center" label="Date" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.timestamp }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -46,29 +45,40 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
-import { parseTime } from '@/utils'
-
+import { formatDateTime } from '@/utils'
 export default {
   name: 'MergeHeader',
   data() {
     return {
-      list: null,
-      listLoading: true,
+      list: [
+        {
+          id: 1,
+          title: '111111111111',
+          author: '哈哈',
+          pageviews: 200,
+          timestamp: 1574473177122
+        },
+        {
+          id: 2,
+          title: '222222222222',
+          author: '嘿嘿',
+          pageviews: 566,
+          timestamp: 1574473177122
+        },
+        {
+          id: 3,
+          title: '333333333333333',
+          author: '嗯嗯',
+          pageviews: 5956,
+          timestamp: 1574473177122
+        }
+      ],
       downloadLoading: false
     }
   },
   created() {
-    this.fetchData()
   },
   methods: {
-    fetchData() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
-    },
     handleDownload() {
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
@@ -90,7 +100,7 @@ export default {
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
-          return parseTime(v[j])
+          return formatDateTime(v[j])
         } else {
           return v[j]
         }
