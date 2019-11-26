@@ -115,13 +115,13 @@
           <el-select v-model="role.data_scope">
             <el-option
               v-for="item in dataScopes"
-              :key="item.data_key"
+              :key="parseInt(item.data_key)"
               :label="item.data_value"
-              :value="item.data_key"
+              :value="parseInt(item.data_key)"
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-show="role.data_scope == 1" label="数据权限">
+        <el-form-item v-show="role.data_scope == 2" label="数据权限">
           <el-tree
             ref="deptTree"
             :data="departments"
@@ -160,7 +160,7 @@ const defaultRole = {
   name: '',
   description: '',
   permIds: [],
-  data_scope: '',
+  data_scope: undefined,
   deptIds: []
 }
 export default {
@@ -220,10 +220,12 @@ export default {
     },
     formatDataScope(row, column) {
       var val = ''
-      for (var item of this.dataScopes) {
-        if (item.data_key === row.data_scope) {
-          val = item.data_value
-          break
+      if (row.data_scope != null) {
+        for (var item of this.dataScopes) {
+          if (parseInt(item.data_key) === row.data_scope) {
+            val = item.data_value
+            break
+          }
         }
       }
       return val
@@ -277,9 +279,13 @@ export default {
       const res = await permissionsByRole(this.role.id)
       this.permissionsByRole = res.result
       this.$nextTick(() => {
-        this.$refs.tree.setCheckedNodes(
-          this.generateArr(this.permissionsByRole)
-        )
+        if (this.permissionsByRole != null) {
+          this.$refs.tree.setCheckedNodes(
+            this.generateArr(this.permissionsByRole)
+          )
+        } else {
+          this.$refs.tree.setCheckedNodes([])
+        }
       })
     },
     async confirmRole() {
@@ -326,7 +332,7 @@ export default {
       if (this.$refs.deptTree) {
         this.$refs.deptTree.setCheckedKeys([])
       }
-      if (row.data_scope === 1) {
+      if (row.data_scope === 2) {
         this.setCheckDeptTree(row.id)
       }
       this.dataScopeDialogVisible = true
