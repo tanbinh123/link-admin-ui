@@ -98,6 +98,7 @@
             show-checkbox
             node-key="id"
             class="permission-tree"
+            @check="checkPermissionTree"
           />
         </el-form-item>
       </el-form>
@@ -248,6 +249,42 @@ export default {
     },
     handleSearch() {
       this.getList()
+    },
+    // 权限树
+    checkPermissionTree(currentObj, treeStatus) {
+      const currentNode = this.$refs.tree.getNode(currentObj)
+      // 用于：父子节点严格互不关联时，父节点勾选变化时通知子节点同步变化，实现单向关联。
+      const selected = treeStatus.checkedKeys.indexOf(currentNode.key) // -1未选中
+      // 选中
+      if (selected !== -1) {
+        // 子节点只要被选中父节点就被选中
+        this.selectedParent(currentNode)
+        // 统一处理子节点为相同的勾选状态
+        this.uniteChildSame(currentNode, true)
+      } else {
+        // 未选中 处理子节点全部未选中
+        if (currentNode.childNodes) {
+          if (currentNode.childNodes.length !== 0) {
+            this.uniteChildSame(currentNode, false)
+          }
+        }
+      }
+    },
+    // 统一处理子节点为相同的勾选状态
+    uniteChildSame(currentNode, isSelected) {
+      this.$refs.tree.setChecked(currentNode.key, isSelected)
+      if (currentNode.childNodes) {
+        for (let i = 0; i < currentNode.childNodes.length; i++) {
+          this.uniteChildSame(currentNode.childNodes[i], isSelected)
+        }
+      }
+    },
+    // 统一处理父节点为选中
+    selectedParent(currentNode) {
+      if (currentNode.parent.key !== undefined) {
+        this.$refs.tree.setChecked(currentNode.parent, true)
+        this.selectedParent(currentNode.parent)
+      }
     },
     handleCreate() {
       this.role = Object.assign({}, defaultRole)

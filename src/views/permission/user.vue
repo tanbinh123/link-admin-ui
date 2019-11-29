@@ -8,6 +8,7 @@
             prefix-icon="el-icon-search"
             placeholder="请输入部门名称"
             clearable
+            @clear="clearSearchDept"
           />
         </el-col>
         <el-col :span="4">
@@ -252,7 +253,6 @@ export default {
         name: '',
         mobile: '',
         deptid: undefined,
-        deptName: '',
         state: undefined
       },
       searchDeptName: '',
@@ -360,6 +360,9 @@ export default {
     async getRoles() {
       const res = await roles()
       this.roles = res.result
+    },
+    clearSearchDept() {
+      this.listQuery.deptid = undefined
     },
     diGuiTree(item) {
       // 递归便利树结构
