@@ -1,6 +1,7 @@
 <template>
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" />
+    <!-- :active-text-color="variables.menuActiveText" -->
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
@@ -8,7 +9,6 @@
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :unique-opened="false"
-        :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
       >

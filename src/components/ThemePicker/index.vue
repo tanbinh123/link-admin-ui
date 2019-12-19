@@ -8,8 +8,9 @@
 </template>
 
 <script>
-const version = require('element-ui/package.json').version // element-ui version from node_modules
-const ORIGINAL_THEME = '#409EFF' // default color
+
+import variables from '@/styles/variables.scss'
+const ORIGINAL_THEME = variables.colorPrimary // default color
 
 export default {
   data() {
@@ -61,7 +62,8 @@ export default {
       }
 
       if (!this.chalk) {
-        const url = `https://unpkg.com/element-ui@${version}/lib/theme-chalk/index.css`
+        // const url = `https://unpkg.com/element-ui@2.12.0/lib/theme-chalk/index.css`
+        const url = `/static/custom-theme/index.css`
         await this.getCSSString(url, 'chalk')
       }
 
