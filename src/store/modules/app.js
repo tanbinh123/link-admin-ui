@@ -1,12 +1,20 @@
-import Cookies from 'js-cookie'
+import variables from '@/styles/element-variables.scss'
+import defaultSettings from '@/settings'
+
+const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: localStorage.getItem('sidebarStatus') !== null ? JSON.parse(localStorage.getItem('sidebarStatus')) : true,
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: localStorage.getItem('size') || 'medium',
+  theme: variables.theme,
+  showSettings: localStorage.getItem('showSettings') !== null ? JSON.parse(localStorage.getItem('showSettings')) : showSettings,
+  tagsView: localStorage.getItem('tagsView') !== null ? JSON.parse(localStorage.getItem('tagsView')) : tagsView,
+  fixedHeader: localStorage.getItem('fixedHeader') !== null ? JSON.parse(localStorage.getItem('fixedHeader')) : fixedHeader,
+  sidebarLogo: localStorage.getItem('sidebarLogo') !== null ? JSON.parse(localStorage.getItem('sidebarLogo')) : sidebarLogo
 }
 
 const mutations = {
@@ -14,13 +22,13 @@ const mutations = {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+      localStorage.setItem('sidebarStatus', true)
     } else {
-      Cookies.set('sidebarStatus', 0)
+      localStorage.setItem('sidebarStatus', false)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
+    localStorage.setItem('sidebarStatus', false)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
@@ -29,7 +37,13 @@ const mutations = {
   },
   SET_SIZE: (state, size) => {
     state.size = size
-    Cookies.set('size', size)
+    localStorage.setItem('size', size)
+  },
+  CHANGE_SETTING: (state, { key, value }) => {
+    if (state.hasOwnProperty(key)) {
+      state[key] = value
+      localStorage.setItem(key, value)
+    }
   }
 }
 
@@ -45,6 +59,9 @@ const actions = {
   },
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
+  },
+  changeSetting({ commit }, data) {
+    commit('CHANGE_SETTING', data)
   }
 }
 

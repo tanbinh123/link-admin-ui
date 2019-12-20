@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     defaultTheme() {
-      return this.$store.state.settings.theme
+      return this.$store.getters.theme
     }
   },
   watch: {
