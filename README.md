@@ -12,21 +12,7 @@ vue-link-admin 提供一个权限认证解决方案，它基于 [vue](https://gi
  <p align="center">
   <img width="900" src="https://252956.github.io/static/img/1.png">
 </p>
- <p align="center">
-  <img width="900" src="https://252956.github.io/static/img/2.png">
-</p>
- <p align="center">
-  <img width="900" src="https://252956.github.io/static/img/3.png">
-</p>
- <p align="center">
-  <img width="900" src="https://252956.github.io/static/img/4.png">
-</p>
- <p align="center">
-  <img width="900" src="https://252956.github.io/static/img/5.png">
-</p>
- <p align="center">
-  <img width="900" src="https://252956.github.io/static/img/6.png">
-</p>
+
 
 
 ## 开发
