@@ -49,9 +49,9 @@ const filterAsyncRouter = (routers) => { // 遍历后台传来的路由字符串
 const routerView = () => {
   return () => import(`@/router/views`)
 }
-const loadView = (view) => { // 路由懒加载
-  return () => import(`@/views${view}`)
-}
+const loadView = (view) => {
+  return (resolve) => require([`@/views${view}`], resolve)
+};
 
 export default {
   namespaced: true,

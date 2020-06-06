@@ -17,8 +17,6 @@ vue-link-admin 提供一个权限认证解决方案，它基于 [vue](https://gi
 
 ## 开发
 
-备注：如果本地没有启动后端接口服务，可用下面免费公用接口获取数据，修改
-.env.development 文件      VUE_APP_BASE_API_URL='http://47.103.154.36:8888'
 
 ```bash
 # 克隆项目
