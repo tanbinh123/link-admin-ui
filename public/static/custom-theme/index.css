@@ -3,5 +3,5 @@
 .tags-view-container .tags-view-wrapper .tags-view-item.active {
     background-color: #409EFF !important;
     color: #fff;
-    border-color: #409EFF !important;
+    /* border-color: #409EFF !important; */
 }

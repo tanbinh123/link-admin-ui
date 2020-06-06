@@ -24,7 +24,18 @@ module.exports = {
    * @description Whether show the logo in sidebar
    */
   sidebarLogo: true,
-
+  /**
+   * 
+   */
+  sidebarColor: 'dark',
+  /**
+   * 
+   */
+  size: 'medium',
+  /**
+   * 
+   */
+  device: 'desktop',
   /**
    * @type {string | array} 'production' | ['production', 'development']
    * @description Need show err logs component.
