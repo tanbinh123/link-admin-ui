@@ -7,6 +7,7 @@ const getters = {
   tagsView: state => state.app.tagsView,
   fixedHeader: state => state.app.fixedHeader,
   sidebarLogo: state => state.app.sidebarLogo,
+  sidebarColor: state => state.app.sidebarColor,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
   token: state => state.user.token,

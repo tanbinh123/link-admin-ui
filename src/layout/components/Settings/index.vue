@@ -3,16 +3,24 @@
     <div>
       <h3 class="drawer-title">整体风格设置</h3>
       <div class="drawer-item">
-        <span @click="sidebarColor('light')">
-          <a href="#">
-            <svg-icon icon-class="layout-light" size="45" />
-          </a>
-        </span>
-        <span @click="sidebarColor('dark')">
-          <a href="#">
-            <svg-icon icon-class="layout-dark" size="45" />
-          </a>
-        </span>
+        <div style="display: flex;">
+          <div @click="sidebarColorChange('light')" class="block-checbox-item">
+            <a href="#">
+              <svg-icon icon-class="layout-light" size="45" />
+            </a>
+            <div v-if="sidebarColor==='light'" class="block-checbox-selectIcon">
+              <svg-icon icon-class="yes" size="15" />
+            </div>
+          </div>
+          <div @click="sidebarColorChange('dark')" class="block-checbox-item">
+            <a href="#">
+              <svg-icon icon-class="layout-dark" size="45" />
+            </a>
+            <div v-if="sidebarColor==='dark'" class="block-checbox-selectIcon">
+              <svg-icon icon-class="yes" size="15" />
+            </div>
+          </div>
+        </div>
       </div>
       <h3 class="drawer-title">系统布局配置</h3>
 
@@ -83,6 +91,9 @@ export default {
           value: val
         });
       }
+    },
+    sidebarColor: function() {
+      return this.$store.getters.sidebarColor;
     }
   },
   methods: {
@@ -92,7 +103,7 @@ export default {
         value: val
       });
     },
-    sidebarColor(val) {
+    sidebarColorChange(val) {
       this.$store.dispatch("app/changeSetting", {
         key: "sidebarColor",
         value: val
@@ -122,6 +133,24 @@ export default {
     padding: 12px 0;
     span {
       padding-right: 15px;
+    }
+    .block-checbox-item {
+      position: relative;
+      margin-right: 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      .block-checbox-selectIcon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        padding-top: 15px;
+        padding-left: 24px;
+        color: #f5222d;
+        font-weight: 700;
+        font-size: 14px;
+      }
     }
   }
 
