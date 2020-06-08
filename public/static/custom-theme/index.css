@@ -93,7 +93,7 @@
 #app .main-container {
   min-height: 100%;
   transition: margin-left .28s;
-  margin-left: 250px;
+  margin-left: 256px;
   position: relative; }
 
 #app .layout-sidebar-dark {
@@ -146,7 +146,7 @@
     color: #409eff !important; }
   #app .layout-sidebar-dark .nest-menu .el-submenu > .el-submenu__title,
   #app .layout-sidebar-dark .el-submenu .el-menu-item {
-    min-width: 250px !important;
+    min-width: 256px !important;
     background-color: #1f2d3d !important;
     color: #bfcbd9 !important; }
     #app .layout-sidebar-dark .nest-menu .el-submenu > .el-submenu__title:hover,
@@ -206,7 +206,7 @@
     color: #409eff !important; }
   #app .layout-sidebar-light .nest-menu .el-submenu > .el-submenu__title,
   #app .layout-sidebar-light .el-submenu .el-menu-item {
-    min-width: 250px !important;
+    min-width: 256px !important;
     background-color: #fff !important;
     color: #303133 !important; }
     #app .layout-sidebar-light .nest-menu .el-submenu > .el-submenu__title:hover,
@@ -219,7 +219,7 @@
 #app .sidebar-container {
   box-shadow: 8px 0 8px 0 rgba(29, 35, 41, 0.05);
   transition: width 0.28s;
-  width: 250px !important;
+  width: 256px !important;
   height: 100%;
   position: fixed;
   font-size: 0px;
@@ -292,7 +292,7 @@
 #app .mobile.hideSidebar .sidebar-container {
   pointer-events: none;
   transition-duration: 0.3s;
-  transform: translate3d(-250px, 0, 0); }
+  transform: translate3d(-256px, 0, 0); }
 
 #app .withoutAnimation .main-container,
 #app .withoutAnimation .sidebar-container {
