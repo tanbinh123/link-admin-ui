@@ -1,7 +1,7 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo, size, device,sidebarColor } = defaultSettings
+const { showSettings, tagsView, fixedHeader, sidebarLogo, size, device, sidebarColor, colorWeak } = defaultSettings
 
 const state = {
   sidebar: {
@@ -15,7 +15,8 @@ const state = {
   tagsView: localStorage.getItem('tagsView') !== null ? JSON.parse(localStorage.getItem('tagsView')) : tagsView,
   fixedHeader: localStorage.getItem('fixedHeader') !== null ? JSON.parse(localStorage.getItem('fixedHeader')) : fixedHeader,
   sidebarLogo: localStorage.getItem('sidebarLogo') !== null ? JSON.parse(localStorage.getItem('sidebarLogo')) : sidebarLogo,
-  sidebarColor: localStorage.getItem('sidebarColor') || sidebarColor
+  sidebarColor: localStorage.getItem('sidebarColor') || sidebarColor,
+  colorWeak: localStorage.getItem('colorWeak') !== null ? JSON.parse(localStorage.getItem('colorWeak')) : colorWeak,
 }
 
 const mutations = {
@@ -41,8 +42,8 @@ const mutations = {
     localStorage.setItem('size', size)
   },
   CHANGE_SETTING: (state, { key, value }) => {
-      state[key] = value
-      localStorage.setItem(key, value)
+    state[key] = value
+    localStorage.setItem(key, value)
   }
 }
 

@@ -122,6 +122,12 @@ aside {
 //main-container全局样式
 .app-container {
   padding: 20px;
+  background-color: #fff;
+  margin: 20px;
+}
+.colorWeak{
+  -webkit-filter: invert(80%);
+   filter: invert(80%); 
 }
 
 .components-container {

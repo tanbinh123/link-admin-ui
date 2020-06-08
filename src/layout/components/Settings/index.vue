@@ -22,8 +22,6 @@
           </div>
         </div>
       </div>
-      <h3 class="drawer-title">系统布局配置</h3>
-
       <div class="drawer-item">
         <span>主题色</span>
         <theme-picker
@@ -31,6 +29,8 @@
           @change="themeChange"
         />
       </div>
+      <el-divider></el-divider>
+      <h3 class="drawer-title">系统布局配置</h3>
 
       <div class="drawer-item">
         <span>开启 Tags-View</span>
@@ -46,6 +46,12 @@
         <span>侧边栏 Logo</span>
         <el-switch v-model="sidebarLogo" class="drawer-switch" />
       </div>
+    </div>
+    <el-divider></el-divider>
+    <h3 class="drawer-title">其他设置</h3>
+    <div class="drawer-item">
+      <span>色弱模式</span>
+      <el-switch v-model="colorWeak" class="drawer-switch" />
     </div>
   </div>
 </template>
@@ -88,6 +94,17 @@ export default {
       set(val) {
         this.$store.dispatch("app/changeSetting", {
           key: "sidebarLogo",
+          value: val
+        });
+      }
+    },
+    colorWeak: {
+      get() {
+        return this.$store.getters.colorWeak;
+      },
+      set(val) {
+        this.$store.dispatch("app/changeSetting", {
+          key: "colorWeak",
           value: val
         });
       }

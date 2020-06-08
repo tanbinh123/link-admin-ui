@@ -8,6 +8,7 @@ const getters = {
   fixedHeader: state => state.app.fixedHeader,
   sidebarLogo: state => state.app.sidebarLogo,
   sidebarColor: state => state.app.sidebarColor,
+  colorWeak: state => state.app.colorWeak,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
   token: state => state.user.token,

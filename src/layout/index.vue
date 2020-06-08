@@ -39,14 +39,16 @@ export default {
       showSettings: state => state.app.showSettings,
       needTagsView: state => state.app.tagsView,
       fixedHeader: state => state.app.fixedHeader,
-      sidebarColor: state => state.app.sidebarColor
+      sidebarColor: state => state.app.sidebarColor,
+      colorWeak: state => state.app.colorWeak
     }),
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === "mobile"
+        mobile: this.device === "mobile",
+        colorWeak: this.colorWeak,
       };
     },
     sidebarClass() {

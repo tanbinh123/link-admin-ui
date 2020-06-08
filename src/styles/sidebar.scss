@@ -5,6 +5,7 @@
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
+    background-color: #f0f2f5;
   }
 
 
@@ -15,11 +16,11 @@
     .sidebar-logo-container {
       position: relative;
       width: 100%;
-      height: 50px;
-      line-height: 50px;
-      background: #2b2f3a;
-      text-align: center;
-      //padding: 0 24px;
+      height: 64px;
+      line-height: 64px;
+      background: $menuBg-dark ;
+      //text-align: center;
+      padding: 0 24px;
       overflow: hidden;
     
       & .sidebar-logo-link {
@@ -38,7 +39,7 @@
           margin: 0;
           color: #fff;
           font-weight: 600;
-          line-height: 50px;
+          line-height: 64px;
           font-size: 16px;
           font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
           vertical-align: middle;
@@ -46,6 +47,7 @@
       }
     
       &.collapse {
+        padding: 0 0 0 10px;
         .sidebar-logo {
           margin-right: 0px;
         }
@@ -104,11 +106,11 @@
     .sidebar-logo-container {
       position: relative;
       width: 100%;
-      height: 50px;
-      line-height: 50px;
+      height: 64px;
+      line-height: 64px;
       background: #fff;
-      text-align: center;
-      //padding: 0 24px;
+      //text-align: center;
+      padding: 0 24px;
       overflow: hidden;
     
       & .sidebar-logo-link {
@@ -127,7 +129,7 @@
           margin: 0;
           color: $menuText-light;
           font-weight: 600;
-          line-height: 50px;
+          line-height: 64px;
           font-size: 16px;
           font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
           vertical-align: middle;
@@ -135,6 +137,7 @@
       }
     
       &.collapse {
+        padding: 0 0 0 10px;
         .sidebar-logo {
           margin-right: 0px;
         }
