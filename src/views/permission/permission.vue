@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="margin-top:20px;max-width:600px;margin-left: 80px;">
+    <div style="max-width:600px;margin-left: 80px;">
       <el-row :gutter="20">
         <el-col :span="20">
           <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable />

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="margin-top:20px;">
+    <div class="filter-container">
       <el-input
         v-model="listQuery.name"
         placeholder="岗位名"

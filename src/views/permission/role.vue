@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="margin-top:20px;">
+    <div class="filter-container">
       <el-input
         v-model="listQuery.name"
         placeholder="角色名"
@@ -142,7 +142,7 @@
   </div>
 </template>
 <script>
-import permission from '@/directive/permission/index.js' // 权限判断指令
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   roleList,
   addRole,
@@ -150,22 +150,22 @@ import {
   deleteRole,
   saveDataScope,
   queryDataScope
-} from '@/api/permission/role'
-import { permissions, permissionsByRole } from '@/api/permission/permission'
-import { departments } from '@/api/permission/department'
-import { dictInfo } from '@/api/permission/dict'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { deepClone } from '@/utils'
+} from "@/api/permission/role";
+import { permissions, permissionsByRole } from "@/api/permission/permission";
+import { departments } from "@/api/permission/department";
+import { dictInfo } from "@/api/permission/dict";
+import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { deepClone } from "@/utils";
 const defaultRole = {
   id: undefined,
-  name: '',
-  description: '',
+  name: "",
+  description: "",
   permIds: [],
   data_scope: undefined,
   deptIds: []
-}
+};
 export default {
-  name: 'Role',
+  name: "Role",
   components: { Pagination },
   directives: { permission },
   data() {
@@ -177,15 +177,15 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        name: ''
+        name: ""
       },
       role: Object.assign({}, defaultRole),
       dialogVisible: false,
-      dialogType: 'new',
+      dialogType: "new",
       checkStrictly: false,
       defaultProps: {
-        children: 'childrens',
-        label: 'name'
+        children: "childrens",
+        label: "name"
       },
       permissions: [],
       permissionsByRole: [],
@@ -194,200 +194,200 @@ export default {
       dataScopes: [],
       rules: {
         name: [
-          { required: true, message: '请输入角色名', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+          { required: true, message: "请输入角色名", trigger: "blur" },
+          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ]
       }
-    }
+    };
   },
   created() {
-    this.getList()
-    this.getPermissions()
-    this.getDepartments()
-    this.getDataScopes()
+    this.getList();
+    this.getPermissions();
+    this.getDepartments();
+    this.getDataScopes();
   },
   methods: {
     async getList() {
-      this.listLoading = true
+      this.listLoading = true;
       // If the Promise is rejected, the rejected value is thrown.
       try {
-        const res = await roleList(this.listQuery)
-        this.listLoading = false
-        this.list = res.result.rows
-        this.total = res.result.records
+        const res = await roleList(this.listQuery);
+        this.listLoading = false;
+        this.list = res.result.rows;
+        this.total = res.result.records;
       } catch (e) {
-        this.listLoading = false
+        this.listLoading = false;
       }
     },
     formatDataScope(row, column) {
-      var val = ''
+      var val = "";
       if (row.data_scope != null) {
         for (var item of this.dataScopes) {
           if (parseInt(item.data_key) === row.data_scope) {
-            val = item.data_value
-            break
+            val = item.data_value;
+            break;
           }
         }
       }
-      return val
+      return val;
     },
     async getPermissions() {
-      const res = await permissions()
-      this.permissions = res.result
+      const res = await permissions();
+      this.permissions = res.result;
     },
     async getPermissionsByRole(roleId) {
-      const res = await permissionsByRole(roleId)
-      this.permissionsByRole = res.result
+      const res = await permissionsByRole(roleId);
+      this.permissionsByRole = res.result;
     },
     async getDataScopes() {
-      const res = await dictInfo('data_scope')
-      this.dataScopes = res.result
+      const res = await dictInfo("data_scope");
+      this.dataScopes = res.result;
     },
     async getDepartments() {
-      const res = await departments()
-      this.departments = res.result
+      const res = await departments();
+      this.departments = res.result;
     },
     handleSearch() {
-      this.getList()
+      this.getList();
     },
     // 权限树
     checkPermissionTree(currentObj, treeStatus) {
-      const currentNode = this.$refs.tree.getNode(currentObj)
+      const currentNode = this.$refs.tree.getNode(currentObj);
       // 用于：父子节点严格互不关联时，父节点勾选变化时通知子节点同步变化，实现单向关联。
-      const selected = treeStatus.checkedKeys.indexOf(currentNode.key) // -1未选中
+      const selected = treeStatus.checkedKeys.indexOf(currentNode.key); // -1未选中
       // 选中
       if (selected !== -1) {
         // 子节点只要被选中父节点就被选中
-        this.selectedParent(currentNode)
+        this.selectedParent(currentNode);
         // 统一处理子节点为相同的勾选状态
-        this.uniteChildSame(currentNode, true)
+        this.uniteChildSame(currentNode, true);
       } else {
         // 未选中 处理子节点全部未选中
         if (currentNode.childNodes) {
           if (currentNode.childNodes.length !== 0) {
-            this.uniteChildSame(currentNode, false)
+            this.uniteChildSame(currentNode, false);
           }
         }
       }
     },
     // 统一处理子节点为相同的勾选状态
     uniteChildSame(currentNode, isSelected) {
-      this.$refs.tree.setChecked(currentNode.key, isSelected)
+      this.$refs.tree.setChecked(currentNode.key, isSelected);
       if (currentNode.childNodes) {
         for (let i = 0; i < currentNode.childNodes.length; i++) {
-          this.uniteChildSame(currentNode.childNodes[i], isSelected)
+          this.uniteChildSame(currentNode.childNodes[i], isSelected);
         }
       }
     },
     // 统一处理父节点为选中
     selectedParent(currentNode) {
       if (currentNode.parent.key !== undefined) {
-        this.$refs.tree.setChecked(currentNode.parent, true)
-        this.selectedParent(currentNode.parent)
+        this.$refs.tree.setChecked(currentNode.parent, true);
+        this.selectedParent(currentNode.parent);
       }
     },
     handleCreate() {
-      this.role = Object.assign({}, defaultRole)
+      this.role = Object.assign({}, defaultRole);
       if (this.$refs.tree) {
-        this.$refs.tree.setCheckedNodes([])
+        this.$refs.tree.setCheckedNodes([]);
       }
-      this.checkStrictly = true
-      this.dialogType = 'new'
-      this.dialogVisible = true
+      this.checkStrictly = true;
+      this.dialogType = "new";
+      this.dialogVisible = true;
     },
     generateArr(routes) {
-      let data = []
+      let data = [];
       routes.forEach(route => {
-        data.push(route)
+        data.push(route);
         if (route.childrens) {
-          const temp = this.generateArr(route.childrens)
+          const temp = this.generateArr(route.childrens);
           if (temp.length > 0) {
-            data = [...data, ...temp]
+            data = [...data, ...temp];
           }
         }
-      })
-      return data
+      });
+      return data;
     },
     async handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.role = deepClone(scope.row)
-      const res = await permissionsByRole(this.role.id)
-      this.permissionsByRole = res.result
+      this.dialogType = "edit";
+      this.dialogVisible = true;
+      this.checkStrictly = true;
+      this.role = deepClone(scope.row);
+      const res = await permissionsByRole(this.role.id);
+      this.permissionsByRole = res.result;
       this.$nextTick(() => {
         if (this.permissionsByRole != null) {
           this.$refs.tree.setCheckedNodes(
             this.generateArr(this.permissionsByRole)
-          )
+          );
         } else {
-          this.$refs.tree.setCheckedNodes([])
+          this.$refs.tree.setCheckedNodes([]);
         }
-      })
+      });
     },
     async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
-      this.role.permIds = this.$refs.tree.getCheckedKeys()
+      const isEdit = this.dialogType === "edit";
+      this.role.permIds = this.$refs.tree.getCheckedKeys();
       if (isEdit) {
-        await updateRole(this.role)
+        await updateRole(this.role);
       } else {
-        await addRole(this.role)
+        await addRole(this.role);
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         showClose: true,
-        message: '保存成功',
-        type: 'success'
-      })
-      this.getList()
+        message: "保存成功",
+        type: "success"
+      });
+      this.getList();
     },
     handleDelete({ row }) {
-      this.$confirm('确认删除角色?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认删除角色?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-        .then(async() => {
-          await deleteRole(row.id)
+        .then(async () => {
+          await deleteRole(row.id);
           this.$message({
             showClose: true,
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getList()
+            message: "删除成功",
+            type: "success"
+          });
+          this.getList();
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     },
     async setCheckDeptTree(roleId) {
-      const res = await queryDataScope(roleId)
-      this.$refs.deptTree.setCheckedKeys(res.result)
+      const res = await queryDataScope(roleId);
+      this.$refs.deptTree.setCheckedKeys(res.result);
     },
     handleDataScope(row) {
-      this.role = deepClone(row)
+      this.role = deepClone(row);
       if (this.$refs.deptTree) {
-        this.$refs.deptTree.setCheckedKeys([])
+        this.$refs.deptTree.setCheckedKeys([]);
       }
       if (row.data_scope === 2) {
-        this.setCheckDeptTree(row.id)
+        this.setCheckDeptTree(row.id);
       }
-      this.dataScopeDialogVisible = true
+      this.dataScopeDialogVisible = true;
     },
     /** 提交按钮（数据权限） */
     async submitDataScope() {
       if (this.role.id) {
-        this.role.deptIds = this.$refs.deptTree.getCheckedKeys()
-        await saveDataScope(this.role)
-        this.dataScopeDialogVisible = false
+        this.role.deptIds = this.$refs.deptTree.getCheckedKeys();
+        await saveDataScope(this.role);
+        this.dataScopeDialogVisible = false;
         this.$message({
           showClose: true,
-          message: '操作成功',
-          type: 'success'
-        })
-        this.getList()
+          message: "操作成功",
+          type: "success"
+        });
+        this.getList();
       }
     }
   }
-}
+};
 </script>

@@ -20,10 +20,10 @@
         </el-tooltip>
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatarGif" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+      <el-dropdown class="avatar-container right-menu-item hover-effect">
+        <div class="avatar-wrapper el-dropdown-link">
+          <el-avatar :src="avatarGif" size="small"></el-avatar>
+          <span class="user-name">{{ userinfo.vserName }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
@@ -45,13 +45,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
-import avatarGif from '@/assets/avatar.gif'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import Hamburger from "@/components/Hamburger";
+import Screenfull from "@/components/Screenfull";
+import SizeSelect from "@/components/SizeSelect";
+import Search from "@/components/HeaderSearch";
+import avatarGif from "@/assets/avatar.gif";
 
 export default {
   components: {
@@ -62,23 +62,23 @@ export default {
     Search
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device'])
+    ...mapGetters(["userinfo", "sidebar", "avatar", "device"])
   },
   data() {
     return {
       avatarGif: avatarGif
-    }
+    };
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -139,17 +139,24 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
-
       .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 12px;
+        cursor: pointer;
+        transition: all 0.3s;
 
         .user-avatar {
+         
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 10px;
+        }
+        .user-name {
+           margin-left: 10px;
+          font-size: 14px;
         }
 
         .el-icon-caret-bottom {

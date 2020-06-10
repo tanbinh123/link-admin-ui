@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="margin-top:20px;">
+    <div class="filter-container">
       <el-input
         v-model="listQuery.data_type"
         placeholder="请输入类型/key/value"
@@ -88,19 +88,19 @@ import {
   addDict,
   updateDict,
   deleteDict
-} from '@/api/permission/dict'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { deepClone } from '@/utils'
+} from "@/api/permission/dict";
+import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { deepClone } from "@/utils";
 const defaultDict = {
   id: undefined,
-  data_type: '',
-  data_key: '',
-  data_value: '',
+  data_type: "",
+  data_key: "",
+  data_value: "",
   sorts: undefined,
-  description: ''
-}
+  description: ""
+};
 export default {
-  name: 'Dict',
+  name: "Dict",
   components: { Pagination },
   data() {
     return {
@@ -111,83 +111,83 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        data_type: ''
+        data_type: ""
       },
       dict: Object.assign({}, defaultDict),
       dialogVisible: false,
-      dialogType: 'new',
+      dialogType: "new",
       rules: {
-        data_type: [{ required: true, message: '请输入type', trigger: 'blur' }],
-        data_key: [{ required: true, message: '请输入key', trigger: 'blur' }],
+        data_type: [{ required: true, message: "请输入type", trigger: "blur" }],
+        data_key: [{ required: true, message: "请输入key", trigger: "blur" }],
         data_value: [
-          { required: true, message: '请输入value', trigger: 'blur' }
+          { required: true, message: "请输入value", trigger: "blur" }
         ]
       }
-    }
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     async getList() {
-      this.listLoading = true
+      this.listLoading = true;
       // If the Promise is rejected, the rejected value is thrown.
       try {
-        const res = await dictList(this.listQuery)
-        this.listLoading = false
-        this.list = res.result.rows
-        this.total = res.result.records
+        const res = await dictList(this.listQuery);
+        this.listLoading = false;
+        this.list = res.result.rows;
+        this.total = res.result.records;
       } catch (e) {
-        this.listLoading = false
+        this.listLoading = false;
       }
     },
     handleSearch() {
-      this.getList()
+      this.getList();
     },
     handleCreate() {
-      this.dict = Object.assign({}, defaultDict)
-      this.dialogType = 'new'
-      this.dialogVisible = true
+      this.dict = Object.assign({}, defaultDict);
+      this.dialogType = "new";
+      this.dialogVisible = true;
     },
     async handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.dict = deepClone(scope.row)
+      this.dialogType = "edit";
+      this.dialogVisible = true;
+      this.dict = deepClone(scope.row);
     },
     async confirmDict() {
-      const isEdit = this.dialogType === 'edit'
+      const isEdit = this.dialogType === "edit";
       if (isEdit) {
-        await updateDict(this.dict)
+        await updateDict(this.dict);
       } else {
-        await addDict(this.dict)
+        await addDict(this.dict);
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         showClose: true,
-        message: '保存成功',
-        type: 'success'
-      })
-      this.getList()
+        message: "保存成功",
+        type: "success"
+      });
+      this.getList();
     },
     handleDelete({ row }) {
-      this.$confirm('确认删除吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认删除吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-        .then(async() => {
-          await deleteDict(row.id)
+        .then(async () => {
+          await deleteDict(row.id);
           this.$message({
             showClose: true,
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getList()
+            message: "删除成功",
+            type: "success"
+          });
+          this.getList();
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     }
   }
-}
+};
 </script>

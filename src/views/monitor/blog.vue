@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class style="margin-top:20px;">
+    <div>
       <el-form :inline="true">
         <el-form-item style="margin-bottom: 12px;">
           <el-date-picker
@@ -169,7 +169,10 @@ export default {
       },
       dialogVisible: false,
       blog: {},
-      stateOptions: [{ label: "失败", key: 0 }, { label: "成功", key: 1 }]
+      stateOptions: [
+        { label: "失败", key: 0 },
+        { label: "成功", key: 1 }
+      ]
     };
   },
   created() {

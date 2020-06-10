@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="margin-top:20px;margin-bottom: 20px">
+    <div style="margin-bottom: 20px">
       <el-row :gutter="10">
         <el-col :span="4">
           <el-input
