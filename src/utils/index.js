@@ -5,18 +5,16 @@
  * 返回当前日期:yyyy-MM-dd
  */
 export function getDate() {
-  var t = new Date()
-  var dt = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate()
-  return dt
+  var t = new Date().getTime();
+  return formatDate(t);
 }
 
 /**
  * 返回当前日期:yyyy-MM-dd HH:mm:ss
  */
 export function getDateTime() {
-  var t = new Date()
-  var dt = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate() + ' ' + t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds()
-  return dt
+  var t = new Date().getTime();
+  return formatDateTime(t);
 }
 /**
  * 偏移分钟
