@@ -53,6 +53,13 @@ export function updateUser(data) {
     data
   })
 }
+export function deleteUser(uid) {
+  return request({
+    url: `/rest/user/delete`,
+    method: 'post',
+    params: { uid }
+  })
+}
 
 export function updateState(data) {
   return request({

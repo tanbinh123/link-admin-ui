@@ -10,7 +10,7 @@
 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
       <el-button
-        v-permission="['/rest/job/add']"
+        v-permission="[permission.add]"
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
@@ -44,13 +44,13 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            v-permission="['/rest/role/update']"
+            v-permission="[permission.edit]"
             type="text"
             size="small"
             @click="handleEdit(scope)"
           >编辑</el-button>
           <el-button
-            v-permission="['/rest/role/delete']"
+            v-permission="[permission.del]"
             type="text"
             size="small"
             @click="handleDelete(scope)"
@@ -94,29 +94,35 @@
   </div>
 </template>
 <script>
-import permission from '@/directive/permission/index.js' // 权限判断指令
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   jobList,
   addJob,
   updateJob,
   updateState,
   deleteJob
-} from '@/api/permission/job'
+} from "@/api/permission/job";
 
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { deepClone } from '@/utils'
+import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { deepClone } from "@/utils";
 const defaultJob = {
   id: undefined,
-  name: '',
+  name: "",
   state: 1,
   sorts: undefined
-}
+};
 export default {
-  name: 'Job',
+  name: "Job",
   components: { Pagination },
   directives: { permission },
   data() {
     return {
+      permission: {
+        list: "job:list",
+        add: "job:add",
+        edit: "job:edit",
+        del: "job:del"
+      },
       tableKey: 0,
       list: null,
       total: 0,
@@ -124,107 +130,107 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        name: ''
+        name: ""
       },
       job: Object.assign({}, defaultJob),
       dialogVisible: false,
-      dialogType: 'new',
+      dialogType: "new",
       rules: {
         name: [
-          { required: true, message: '请输入岗位名', trigger: 'blur' },
-          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+          { required: true, message: "请输入岗位名", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        state: [{ required: true, message: '请选择状态', trigger: 'change' }]
+        state: [{ required: true, message: "请选择状态", trigger: "change" }]
       }
-    }
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     async getList() {
-      this.listLoading = true
+      this.listLoading = true;
       // If the Promise is rejected, the rejected value is thrown.
       try {
-        const res = await jobList(this.listQuery)
-        this.listLoading = false
-        this.list = res.result.rows
-        this.total = res.result.records
+        const res = await jobList(this.listQuery);
+        this.listLoading = false;
+        this.list = res.result.rows;
+        this.total = res.result.records;
       } catch (e) {
-        this.listLoading = false
+        this.listLoading = false;
       }
     },
     handleSearch() {
-      this.getList()
+      this.getList();
     },
     // 状态修改
     handleStateChange(row) {
-      const text = row.state === 1 ? '启用' : '停用'
+      const text = row.state === 1 ? "启用" : "停用";
       this.$confirm(
-        '确认要 [' + text + '] [' + row.name + '] 岗位吗?',
-        '警告',
+        "确认要 [" + text + "] [" + row.name + "] 岗位吗?",
+        "警告",
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }
       )
-        .then(async() => {
-          await updateState({ id: row.id, state: row.state })
+        .then(async () => {
+          await updateState({ id: row.id, state: row.state });
           this.$message({
-            message: text + '成功',
-            type: 'success'
-          })
+            message: text + "成功",
+            type: "success"
+          });
         })
         .catch(err => {
-          console.error(err)
-          row.state = row.state === 0 ? 1 : 0
-        })
+          console.error(err);
+          row.state = row.state === 0 ? 1 : 0;
+        });
     },
     handleCreate() {
-      this.dialogType = 'new'
-      this.dialogVisible = true
+      this.dialogType = "new";
+      this.dialogVisible = true;
     },
     handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.job = deepClone(scope.row)
+      this.dialogType = "edit";
+      this.dialogVisible = true;
+      this.checkStrictly = true;
+      this.job = deepClone(scope.row);
     },
     async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
+      const isEdit = this.dialogType === "edit";
       if (isEdit) {
-        await updateJob(this.job)
+        await updateJob(this.job);
       } else {
-        await addJob(this.job)
+        await addJob(this.job);
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         showClose: true,
-        message: '保存成功',
-        type: 'success'
-      })
-      this.getList()
+        message: "保存成功",
+        type: "success"
+      });
+      this.getList();
     },
     handleDelete({ row }) {
-      this.$confirm('确认删除?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认删除?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-        .then(async() => {
-          await deleteJob(row.id)
+        .then(async () => {
+          await deleteJob(row.id);
           this.$message({
             showClose: true,
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getList()
+            message: "删除成功",
+            type: "success"
+          });
+          this.getList();
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     }
   }
-}
+};
 </script>

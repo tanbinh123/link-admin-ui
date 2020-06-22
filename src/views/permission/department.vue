@@ -27,19 +27,19 @@
               <span>{{ node.label }}</span>
               <span>
                 <el-button
-                  v-permission="['/rest/department/add']"
+                  v-permission="[permission.add]"
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
                 >添加子项</el-button>
                 <el-button
-                  v-permission="['/rest/department/update']"
+                  v-permission="[permission.edit]"
                   type="text"
                   size="mini"
                   @click="() => handleEdit(node,data)"
                 >编辑</el-button>
                 <el-button
-                  v-permission="['/rest/department/delete']"
+                  v-permission="[permission.del]"
                   type="text"
                   size="mini"
                   @click="() => handleDelete(data)"
@@ -118,6 +118,12 @@ export default {
   directives: { permission },
   data() {
     return {
+      permission: {
+        list: "dept:list",
+        add: "dept:add",
+        edit: "dept:edit",
+        del: "dept:del"
+      },
       defaultProps: {
         children: "childrens",
         label: "name"

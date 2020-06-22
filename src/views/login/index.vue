@@ -1,57 +1,50 @@
 <template>
   <div class="login-container">
-    <el-alert
-      title="欢迎使用Vue-Link-Admin，使用过程中如果遇到什么问题、请及时联系信息中心工作人员、我们将第一时间为大家服务。"
-      type="success"
-      :closable="false"
-    ></el-alert>
-    <div class="login-logo-bysj"></div>
-    <el-row>
-      <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
-        <el-form
-          ref="loginForm"
-          :model="loginForm"
-          :rules="loginRules"
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      auto-complete="off"
+      class="login-form"
+      label-position="left"
+    >
+      <div class="title">hello !</div>
+      <div class="title-tips">欢迎来到Vue-Link-Admin！</div>
+      <el-form-item style="margin-top: 49px;" prop="username" class="login-form-admin">
+        <span class="svg-container svg-container-admin">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input
+          ref="username"
+          v-model.trim="loginForm.username"
           auto-complete="off"
-          class="login-form"
-          label-position="left"
-        >
-          <div class="title">hello !</div>
-          <div class="title-tips">欢迎来到Vue-Link-Admin！</div>
-          <el-form-item style="margin-top: 49px;" prop="username" class="login-form-admin">
-            <span class="svg-container svg-container-admin">
-              <svg-icon icon-class="user" />
-            </span>
-            <el-input
-              v-model.trim="loginForm.username"
-              auto-complete="off"
-              placeholder="请输入用户名"
-              tabindex="1"
-              type="text"
-            />
-          </el-form-item>
-          <el-form-item prop="password" class="login-form-pass">
-            <span class="svg-container svg-container-pass">
-              <svg-icon icon-class="password" />
-            </span>
-            <el-input
-              :key="passwordType"
-              ref="password"
-              v-model.trim="loginForm.password"
-              :type="passwordType"
-              auto-complete="off"
-              placeholder="请输入密码"
-              tabindex="2"
-              @keyup.enter.native="handleLogin"
-            />
-            <span class="show-pwd" @click="showPwd">
-              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-            </span>
-          </el-form-item>
-          <el-button :loading="loading" class="login-btn" type="primary" @click="handleLogin">登录</el-button>
-        </el-form>
-      </el-col>
-    </el-row>
+          placeholder="请输入用户名"
+          tabindex="1"
+          type="text"
+        />
+      </el-form-item>
+      <el-form-item prop="password" class="login-form-pass">
+        <span class="svg-container svg-container-pass">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input
+          :key="passwordType"
+          ref="password"
+          v-model.trim="loginForm.password"
+          :type="passwordType"
+          auto-complete="off"
+          placeholder="请输入密码"
+          tabindex="2"
+          @keyup.enter.native="handleLogin"
+        />
+        <span class="show-pwd" @click="showPwd">
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+        </span>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" class="login-btn" type="primary" @click="handleLogin">登录</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -79,8 +72,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "123456"
+        username: "",
+        password: ""
       },
       loginRules: {
         username: [
@@ -202,10 +195,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .login-container {
-  height: 100vh;
-  min-height: 600px;
-  background: url("~@/assets/bk.jpg") center center fixed no-repeat;
-  background-size: cover;
+  min-height: 100%;
+  width: 100%;
+  overflow: hidden;
+  //background: url("~@/assets/bk.jpg") center center fixed no-repeat;
+  background-color: #f4f4f4;
   .title {
     height: 50px;
     font-size: 54px;
@@ -229,22 +223,17 @@ export default {
       opacity: 0.9;
     }
   }
-  .login-logo-bysj {
-    position: absolute;
-    top: 45px;
-    left: 45px;
-    img {
-      width: 180px;
-    }
-  }
   .login-form {
-    position: relative;
+    //position: relative;
+    width: 520px;
     max-width: 100%;
-    margin: 22vh 10% 10%;
+    padding: 110px 35px 0;
+    margin: 0 auto;
     overflow: hidden;
+
     .forget-password {
       width: 100%;
-      margin-top: 40px;
+      margin-top: 30px;
       text-align: left;
       .forget-pass {
         width: 129px;

@@ -9,14 +9,14 @@
       />
 
       <el-button
-        v-permission="['/rest/role/list']"
+        v-permission="[permission.list]"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleSearch"
       >查找</el-button>
       <el-button
-        v-permission="['/rest/role/add']"
+        v-permission="[permission.add]"
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
@@ -42,19 +42,19 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            v-permission="['/rest/role/saveDataScope']"
+            v-permission="[permission.datascope]"
             size="small"
             type="text"
             @click="handleDataScope(scope.row)"
           >数据权限</el-button>
           <el-button
-            v-permission="['/rest/role/update']"
+            v-permission="[permission.edit]"
             type="text"
             size="small"
             @click="handleEdit(scope)"
           >编辑</el-button>
           <el-button
-            v-permission="['/rest/role/delete']"
+            v-permission="[permission.del]"
             type="text"
             size="small"
             @click="handleDelete(scope)"
@@ -170,6 +170,13 @@ export default {
   directives: { permission },
   data() {
     return {
+      permission: {
+        list: "role:list",
+        add: "role:add",
+        edit: "role:edit",
+        del: "role:del",
+        datascope: "role:datascope"
+      },
       tableKey: 0,
       list: null,
       total: 0,

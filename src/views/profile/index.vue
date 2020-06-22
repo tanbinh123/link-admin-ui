@@ -43,6 +43,10 @@
                     <span>账号</span>
                     <span>{{ userinfo.name }}</span>
                   </div>
+                   <div class="progress-item">
+                    <span>公司</span>
+                    <span>{{ userinfo.companyName }}</span>
+                  </div>
                   <div class="progress-item">
                     <span>部门</span>
                     <span>{{ userinfo.deptName }}</span>

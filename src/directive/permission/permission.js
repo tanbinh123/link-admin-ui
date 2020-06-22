@@ -4,20 +4,17 @@ export default {
   inserted(el, binding, vnode) {
     const { value } = binding
     const permissions = store.getters && store.getters.permissions
-
-    if (value && value instanceof Array && value.length > 0 && permissions) {
-      let hasPermission = false
-      for (var perm of permissions) {
-        if (perm.url === value[0]) {
-          hasPermission = true
-          break
+    if (value && value instanceof Array) {
+      if (value.length > 0) {
+        const hasPermission = permissions.some(perm => {
+          return value.includes(perm.permissionFlag)
+        })
+        if (!hasPermission) {
+          el.parentNode && el.parentNode.removeChild(el)
         }
       }
-      if (!hasPermission) {
-        el.remove()
-      }
     } else {
-      throw new Error(`need permissions! Like v-permission="['/rest/user/list']"`)
+      el.parentNode && el.parentNode.removeChild(el)
     }
   }
 }

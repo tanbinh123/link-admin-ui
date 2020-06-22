@@ -16,9 +16,12 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
+import permission from "@/directive/permission/index.js"; // 权限判断指令
+
 Vue.use(Element, {
   size: store.getters.size // set element-ui default size
 })
+Vue.use(permission)
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

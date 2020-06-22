@@ -27,19 +27,19 @@
               <span>{{ node.label }}</span>
               <span>
                 <el-button
-                  v-permission="['/rest/permission/add']"
+                  v-permission="[curdPermission.add]"
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
                 >添加子项</el-button>
                 <el-button
-                  v-permission="['/rest/permission/update']"
+                  v-permission="[curdPermission.edit]"
                   type="text"
                   size="mini"
                   @click="() => handleEdit(node,data)"
                 >编辑</el-button>
                 <el-button
-                  v-permission="['/rest/permission/delete']"
+                  v-permission="[curdPermission.del]"
                   type="text"
                   size="mini"
                   @click="() => handleDelete(data)"
@@ -91,7 +91,7 @@
             <el-radio-button label="0">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="permission.types.toString() !== '2'" label="缓存">
+        <el-form-item v-show="permission.types.toString() == '1'" label="缓存">
           <el-radio-group v-model="permission.cache" size="mini">
             <el-radio-button label="1">是</el-radio-button>
             <el-radio-button label="0">否</el-radio-button>
@@ -103,11 +103,17 @@
             <el-radio-button label="0">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="权限名">
-          <el-input v-model="permission.name" placeholder="权限名" />
+        <el-form-item v-show="permission.types.toString() !== '2'" label="菜单标题">
+          <el-input v-model="permission.name" placeholder="菜单标题" />
+        </el-form-item>
+        <el-form-item v-show="permission.types.toString() == '2'" label="按钮名称">
+          <el-input v-model="permission.name" placeholder="按钮名称" style="width: 178px;" />
+        </el-form-item>
+        <el-form-item v-show="permission.types.toString() !== '0'" label="权限标识">
+          <el-input v-model="permission.permissionFlag" placeholder="权限标识" style="width: 178px;" />
         </el-form-item>
 
-        <el-form-item label="路由地址">
+        <el-form-item label="路由地址" v-show="permission.types.toString() !== '2'">
           <el-input v-model="permission.url" placeholder="路由地址" style="width: 450px;" />
         </el-form-item>
 
@@ -155,156 +161,163 @@
 </template>
 <script>
 // import the component
-import Treeselect from '@riophae/vue-treeselect'
+import Treeselect from "@riophae/vue-treeselect";
 // import the styles
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import IconSelect from '@/components/IconSelect'
-import permission from '@/directive/permission/index.js' // 权限判断指令
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import IconSelect from "@/components/IconSelect";
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   permissions,
   addPermission,
   updatePermission,
   deletePermission
-} from '@/api/permission/permission'
-import { deepClone } from '@/utils'
+} from "@/api/permission/permission";
+import { deepClone } from "@/utils";
 const defaultPermission = {
   id: undefined,
-  name: '',
+  name: "",
   parentId: undefined,
-  parentName: '',
-  url: '',
+  parentName: "",
+  permissionFlag: "",
+  url: "",
   types: 0,
   sorts: undefined,
-  component_name: '',
-  component_path: '',
-  icon: '',
+  component_name: "",
+  component_path: "",
+  icon: "",
   cache: 0,
   hidden: 0,
   i_frame: 0
-}
+};
 export default {
-  name: 'Permission',
+  name: "Permission",
   components: { Treeselect, IconSelect },
   directives: { permission },
   data() {
     return {
+      curdPermission: {
+        list: "permission:list",
+        add: "permission:add",
+        edit: "permission:edit",
+        del: "permission:del"
+      },
       defaultProps: {
-        children: 'childrens',
-        label: 'name'
+        children: "childrens",
+        label: "name"
       },
       permission: Object.assign({}, defaultPermission),
       permissions: [],
       dialogVisible: false,
-      dialogType: 'new',
-      filterText: '',
+      dialogType: "new",
+      filterText: "",
       rules: {
         types: [
-          { required: true, message: '请选择权限类型', trigger: 'change' }
+          { required: true, message: "请选择权限类型", trigger: "change" }
         ],
         name: [
-          { required: true, message: '请输入权限名', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { required: true, message: "请输入权限名", trigger: "blur" },
+          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
         ],
-        url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
+        url: [{ required: true, message: "请输入路由地址", trigger: "blur" }],
         parentId: [
-          { required: true, message: '请选择上级权限', trigger: 'change' }
+          { required: true, message: "请选择上级权限", trigger: "change" }
         ]
       }
-    }
+    };
   },
   watch: {
     filterText(val) {
-      this.$refs.tree.filter(val)
+      this.$refs.tree.filter(val);
     }
   },
   created() {
-    this.getPermissions()
+    this.getPermissions();
   },
   methods: {
     async getPermissions() {
-      const res = await permissions()
-      const result = res.result
-      this.diGuiTree(result)
-      this.permissions = [{ id: 0, name: '权限树', childrens: result }]
+      const res = await permissions();
+      const result = res.result;
+      this.diGuiTree(result);
+      this.permissions = [{ id: 0, name: "权限树", childrens: result }];
     },
     filterNode(value, data) {
-      if (!value) return true
-      return data.name.indexOf(value) !== -1
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
     },
     diGuiTree(item) {
       // 递归便利树结构
       item.forEach(item => {
-        item.childrens === '' ||
+        item.childrens === "" ||
         item.childrens === undefined ||
         item.childrens === null
           ? delete item.childrens
-          : this.diGuiTree(item.childrens)
-      })
+          : this.diGuiTree(item.childrens);
+      });
     },
     normalizer(node) {
       return {
         id: node.id,
         label: node.name,
         children: node.childrens
-      }
+      };
     },
     selected(name) {
-      this.permission.icon = name
+      this.permission.icon = name;
     },
     handleCreate(data) {
-      this.dialogType = 'new'
-      this.dialogVisible = true
-      this.permission = Object.assign({}, defaultPermission)
+      this.dialogType = "new";
+      this.dialogVisible = true;
+      this.permission = Object.assign({}, defaultPermission);
       if (data != null) {
-        this.permission.parentId = data.id
-        this.permission.parentName = data.name
+        this.permission.parentId = data.id;
+        this.permission.parentName = data.name;
       }
     },
 
     async handleEdit(node, data) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.permission = deepClone(data)
-      const parent = node.parent.data
-      this.permission.parentId = parent.id
-      this.permission.parentName = parent.name
+      this.dialogType = "edit";
+      this.dialogVisible = true;
+      this.permission = deepClone(data);
+      const parent = node.parent.data;
+      this.permission.parentId = parent.id;
+      this.permission.parentName = parent.name;
     },
     async confirmPermission() {
-      const isEdit = this.dialogType === 'edit'
+      const isEdit = this.dialogType === "edit";
       if (isEdit) {
-        await updatePermission(this.permission)
+        await updatePermission(this.permission);
       } else {
-        await addPermission(this.permission)
+        await addPermission(this.permission);
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         showClose: true,
-        message: '保存成功',
-        type: 'success'
-      })
-      this.getPermissions()
+        message: "保存成功",
+        type: "success"
+      });
+      this.getPermissions();
     },
     handleDelete(data) {
-      this.$confirm('确认删除?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认删除?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-        .then(async() => {
-          await deletePermission(data.id)
+        .then(async () => {
+          await deletePermission(data.id);
           this.$message({
             showClose: true,
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getPermissions()
+            message: "删除成功",
+            type: "success"
+          });
+          this.getPermissions();
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     }
   }
-}
+};
 </script>
 <style>
 .custom-tree-node {

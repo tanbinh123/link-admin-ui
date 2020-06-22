@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom: 20px">
+    <div>
       <el-row :gutter="10">
         <el-col :span="4">
           <el-input
@@ -30,21 +30,12 @@
         </el-col>
         <el-col :span="8">
           <el-button
-            v-permission="['/rest/user/list']"
+            v-permission="[permission.list]"
             class="filter-item"
             type="primary"
             icon="el-icon-search"
             @click="handleSearch"
           >查找</el-button>
-          <el-button
-            v-permission="['/rest/user/add']"
-            class="filter-item"
-            style="margin-left: 10px;"
-            type="primary"
-            @click="handleCreate"
-          >
-            <i class="el-icon-plus" />新增
-          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -57,7 +48,6 @@
             :data="departments"
             :props="defaultProps"
             node-key="id"
-            default-expand-all
             :expand-on-click-node="false"
             :filter-node-method="filterNode"
             class="objectTree"
@@ -66,6 +56,52 @@
         </el-col>
 
         <el-col :span="20">
+          <div class="table-toolbar">
+            <div class="table-toolbar-left">
+              <el-button
+                v-permission="[permission.add]"
+                class="filter-item"
+                type="primary"
+                icon="el-icon-plus"
+                @click="handleCreate"
+              >新增</el-button>
+              <!-- <el-button
+                v-permission="[permission.edit]"
+                class="filter-item"
+                type="success"
+                icon="el-icon-edit"
+              >修改</el-button>
+              <el-button
+                slot="reference"
+                v-permission="[permission.del]"
+                class="filter-item"
+                type="danger"
+                icon="el-icon-delete"
+              >删除</el-button>
+              <el-button
+                v-permission="permission.download"
+                class="filter-item"
+                type="warning"
+                icon="el-icon-download"
+              >导出</el-button>-->
+            </div>
+            <div class="table-toolbar-right">
+              <el-button-group>
+                <el-button icon="el-icon-refresh" @click="handleSearch" />
+                <el-popover placement="bottom-end" width="150" trigger="click">
+                  <el-button slot="reference" icon="el-icon-s-grid">
+                    <i class="fa fa-caret-down" aria-hidden="true" />
+                  </el-button>
+                  <el-checkbox v-model="allColumnsSelected" @change="handleCheckAllChange">全选</el-checkbox>
+                  <el-checkbox
+                    v-for="item in tableColumns"
+                    :key="item.property"
+                    v-model="item.visible"
+                  >{{ item.label }}</el-checkbox>
+                </el-popover>
+              </el-button-group>
+            </div>
+          </div>
           <el-table
             :key="tableKey"
             v-loading="listLoading"
@@ -99,11 +135,17 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  v-permission="['/rest/user/update']"
+                  v-permission="[permission.edit]"
                   type="text"
                   size="small"
                   @click="handleEdit(scope)"
                 >编辑</el-button>
+                <el-button
+                  v-permission="[permission.del]"
+                  type="text"
+                  size="small"
+                  @click="handleDelete(scope)"
+                >删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -193,7 +235,12 @@
           <el-col :span="24">
             <el-form-item label="角色">
               <el-select v-model="user.roleIds" multiple placeholder="请选择" style="width:100%">
-                <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id" />
+                <el-option
+                  v-for="item in roles"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -207,41 +254,46 @@
   </div>
 </template>
 <script>
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import permission from '@/directive/permission/index.js' // 权限判断指令
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import {
   userList,
   addUser,
   updateUser,
+  deleteUser,
   updateState
-} from '@/api/permission/user'
-import { departments } from '@/api/permission/department'
-import { jobs } from '@/api/permission/job'
-import { roles } from '@/api/permission/role'
-import { deepClone } from '@/utils'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+} from "@/api/permission/user";
+import { departments } from "@/api/permission/department";
+import { jobs } from "@/api/permission/job";
+import { roles } from "@/api/permission/role";
+import { deepClone } from "@/utils";
+import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 const defaultUser = {
-  uid: '',
-  name: '',
+  uid: "",
+  name: "",
   password: 123456,
-  vserName: '',
-  mobile: '',
+  vserName: "",
+  mobile: "",
   state: 1,
-  email: '',
+  email: "",
   deptid: undefined,
   jobid: undefined,
-  jobName: '',
-  deptName: '',
+  jobName: "",
+  deptName: "",
   roleIds: []
-}
+};
 
 export default {
-  name: 'User',
+  name: "User",
   components: { Pagination, Treeselect },
-  directives: { permission },
   data() {
     return {
+      permission: {
+        list: "user:list",
+        add: "user:add",
+        edit: "user:edit",
+        del: "user:del"
+      },
       tableKey: 0,
       list: null,
       total: 0,
@@ -249,201 +301,223 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        vserName: '',
-        name: '',
-        mobile: '',
+        vserName: "",
+        name: "",
+        mobile: "",
         deptid: undefined,
         state: undefined
       },
-      searchDeptName: '',
-      stateOptions: [{ label: '禁用', value: 0 }, { label: '启用', value: 1 }],
+      searchDeptName: "",
+      stateOptions: [
+        { label: "禁用", value: 0 },
+        { label: "启用", value: 1 }
+      ],
       user: Object.assign({}, defaultUser),
       defaultProps: {
-        children: 'childrens',
-        label: 'name'
+        children: "childrens",
+        label: "name"
       },
       departments: [],
       roles: [],
-      activeName: 'first',
+      activeName: "first",
       dialogVisible: false,
-      dialogType: 'new',
+      dialogType: "new",
       rules: {
         name: [
-          { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { required: true, message: "请输入账号", trigger: "blur" },
+          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
         ],
         vserName: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
-        deptid: [{ required: true, message: '请选择部门', trigger: 'change' }],
-        state: [{ required: true, message: '请选择状态', trigger: 'change' }]
+        deptid: [{ required: true, message: "请选择部门", trigger: "change" }],
+        state: [{ required: true, message: "请选择状态", trigger: "change" }]
       }
-    }
+    };
   },
   watch: {
     searchDeptName(val) {
-      this.$refs.serchDeptTree.filter(val)
+      this.$refs.serchDeptTree.filter(val);
     }
   },
   created() {},
   mounted() {
-    this.getList()
-    this.getDepartments()
-    this.getJobs()
-    this.getRoles()
+    this.getList();
+    this.getDepartments();
+    this.getJobs();
+    this.getRoles();
   },
   methods: {
     async getList() {
-      this.listLoading = true
+      this.listLoading = true;
       // If the Promise is rejected, the rejected value is thrown.
       try {
-        const res = await userList(this.listQuery)
-        this.listLoading = false
-        this.list = res.result.rows
-        this.total = res.result.records
+        const res = await userList(this.listQuery);
+        this.listLoading = false;
+        this.list = res.result.rows;
+        this.total = res.result.records;
       } catch (e) {
-        this.listLoading = false
+        this.listLoading = false;
       }
     },
     handleSearch() {
-      this.getList()
+      this.getList();
     },
     formatDept(row, column) {
-      return row.deptName + ' / ' + row.jobName
+      return row.deptName + " / " + row.jobName;
     },
     formatRole(row, column) {
-      var roleNames = []
+      var roleNames = [];
       row.roles.forEach(role => {
-        roleNames.push(role.name)
-      })
-      return roleNames.join(' , ')
+        roleNames.push(role.name);
+      });
+      return roleNames.join(" , ");
     },
     // 用户状态修改
     handleStateChange(row) {
-      const text = row.state === 1 ? '启用' : '禁用'
+      const text = row.state === 1 ? "启用" : "禁用";
       this.$confirm(
-        '确认要 [' + text + '] [' + row.name + '] 用户吗?',
-        '警告',
+        "确认要 [" + text + "] [" + row.name + "] 用户吗?",
+        "警告",
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }
       )
-        .then(async() => {
-          await updateState({ uid: row.uid, state: row.state })
+        .then(async () => {
+          await updateState({ uid: row.uid, state: row.state });
           this.$message({
-            message: text + '成功',
-            type: 'success'
-          })
+            message: text + "成功",
+            type: "success"
+          });
         })
         .catch(err => {
-          console.error(err)
-          row.state = row.state === 0 ? 1 : 0
-        })
+          console.error(err);
+          row.state = row.state === 0 ? 1 : 0;
+        });
     },
     async getDepartments() {
-      const res = await departments()
-      const result = res.result
-      this.diGuiTree(result)
-      this.departments = [{ id: 0, name: '部门树', childrens: result }]
+      const res = await departments();
+      const result = res.result;
+      this.diGuiTree(result);
+      this.departments = [{ id: 0, name: "部门树", childrens: result }];
     },
     async getJobs() {
-      const res = await jobs()
-      this.jobs = res.result
+      const res = await jobs();
+      this.jobs = res.result;
     },
     async getRoles() {
-      const res = await roles()
-      this.roles = res.result
+      const res = await roles();
+      this.roles = res.result;
     },
     clearSearchDept() {
-      this.listQuery.deptid = undefined
+      this.listQuery.deptid = undefined;
     },
     diGuiTree(item) {
       // 递归便利树结构
       item.forEach(item => {
-        item.childrens === '' ||
+        item.childrens === "" ||
         item.childrens === undefined ||
         item.childrens === null
           ? delete item.childrens
-          : this.diGuiTree(item.childrens)
-      })
+          : this.diGuiTree(item.childrens);
+      });
     },
     normalizer(node) {
       return {
         id: node.id,
         label: node.name,
         children: node.childrens
-      }
+      };
     },
     queryJobSearch(queryString, cb) {
-      var jobs = this.jobs
+      var jobs = this.jobs;
       var results = queryString
         ? jobs.filter(this.createJobFilter(queryString))
-        : jobs
+        : jobs;
       // 调用 callback 返回建议列表的数据
-      cb(results)
+      cb(results);
     },
     createJobFilter(queryString) {
       return jobs => {
-        return jobs.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
+        return jobs.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
+      };
     },
     handleJobSelect(item) {
-      this.user.jobid = item.id
-      this.user.jobName = item.name
+      this.user.jobid = item.id;
+      this.user.jobName = item.name;
     },
     handleCreate() {
-      this.dialogType = 'new'
-      this.activeName = 'first'
-      this.dialogVisible = true
-      this.user = Object.assign({}, defaultUser)
+      this.dialogType = "new";
+      this.activeName = "first";
+      this.dialogVisible = true;
+      this.user = Object.assign({}, defaultUser);
     },
     handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.activeName = 'first'
-      this.dialogVisible = true
-      scope.row.roleIds = []
-      this.user = deepClone(scope.row)
+      this.dialogType = "edit";
+      this.activeName = "first";
+      this.dialogVisible = true;
+      scope.row.roleIds = [];
+      this.user = deepClone(scope.row);
       if (this.user.roles) {
-        const roleIds = this.user.roleIds
+        const roleIds = this.user.roleIds;
         this.user.roles.forEach(role => {
-          roleIds.push(role.id)
-        })
+          roleIds.push(role.id);
+        });
       }
     },
     async confirmUser() {
-      const isEdit = this.dialogType === 'edit'
+      const isEdit = this.dialogType === "edit";
       if (isEdit) {
-        await updateUser(this.user)
+        await updateUser(this.user);
       } else {
-        await addUser(this.user)
+        await addUser(this.user);
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         showClose: true,
-        message: '保存成功',
-        type: 'success'
-      })
-      this.getList()
+        message: "保存成功",
+        type: "success"
+      });
+      this.getList();
     },
     // 节点单击事件
     handleSearchDeptNode(data) {
-      this.isShowSelect = false
-      this.listQuery.deptid = data.id
-      this.getList()
+      this.isShowSelect = false;
+      this.listQuery.deptid = data.id;
+      this.getList();
     },
 
     // 筛选节点
     filterNode(value, data) {
-      if (!value) return true
-      return data.name.indexOf(value) !== -1
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
+    },
+    handleDelete({ row }) {
+      this.$confirm("确认删除?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          await deleteUser(row.uid);
+          this.$message({
+            showClose: true,
+            message: "删除成功",
+            type: "success"
+          });
+          this.getList();
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
-}
+};
 </script>
