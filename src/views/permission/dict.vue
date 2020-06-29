@@ -9,29 +9,74 @@
       />
 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        @click="handleCreate"
-      >
-        <i class="el-icon-plus" /> 新增
-      </el-button>
     </div>
-
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <el-button
+          v-permission="[permission.add]"
+          class="filter-item"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCreate"
+        >新增</el-button>
+        <el-button
+          ref="editButton"
+          v-permission="[permission.edit]"
+          class="filter-item"
+          type="success"
+          icon="el-icon-edit"
+          @click="handleSelectionEdit"
+        >编辑</el-button>
+        <el-button
+          ref="delButton"
+          v-permission="[permission.del]"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleSelectionDel"
+        >删除</el-button>
+        <!--   <el-button
+                v-permission="permission.download"
+                class="filter-item"
+                type="warning"
+                icon="el-icon-download"
+        >导出</el-button>-->
+      </div>
+      <div class="table-toolbar-right">
+        <el-button-group>
+          <el-button icon="el-icon-refresh" @click="handleSearch" />
+          <el-popover placement="bottom-end" width="150" trigger="click">
+            <el-button slot="reference" icon="el-icon-s-grid">
+              <i class="fa fa-caret-down" aria-hidden="true" />
+            </el-button>
+            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
+            <el-checkbox
+              v-for="item in tableColumns"
+              :key="item.property"
+              v-model="item.visible"
+            >{{ item.label }}</el-checkbox>
+          </el-popover>
+        </el-button-group>
+      </div>
+    </div>
     <el-table
+      ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
       style="width: 100%;"
       height="450"
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+      @current-change="handleCurrentChange"
     >
-      <el-table-column width="50">
+      <!-- <el-table-column width="50">
         <template slot-scope="scope">
           <span>{{ scope.$index+(listQuery.page - 1) * listQuery.limit + 1 }}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
+      <el-table-column type="selection"></el-table-column>
       <el-table-column prop="data_type" label="类型" />
       <el-table-column prop="data_key" label="key" />
       <el-table-column prop="data_value" label="value" />
@@ -40,8 +85,8 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -104,6 +149,12 @@ export default {
   components: { Pagination },
   data() {
     return {
+      permission: {
+        list: "dict:list",
+        add: "dict:add",
+        edit: "dict:edit",
+        del: "dict:del"
+      },
       tableKey: 0,
       list: null,
       total: 0,
@@ -113,6 +164,9 @@ export default {
         limit: 10,
         data_type: ""
       },
+      allColumnsSelected: [],
+      tableColumns: [],
+      multipleSelection: [],
       dict: Object.assign({}, defaultDict),
       dialogVisible: false,
       dialogType: "new",
@@ -149,10 +203,10 @@ export default {
       this.dialogType = "new";
       this.dialogVisible = true;
     },
-    async handleEdit(scope) {
+    async handleEdit(row) {
       this.dialogType = "edit";
       this.dialogVisible = true;
-      this.dict = deepClone(scope.row);
+      this.dict = deepClone(row);
     },
     async confirmDict() {
       const isEdit = this.dialogType === "edit";
@@ -169,7 +223,7 @@ export default {
       });
       this.getList();
     },
-    handleDelete({ row }) {
+    handleDelete(row) {
       this.$confirm("确认删除吗?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -187,6 +241,34 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    handleCurrentChange(val) {
+      this.$refs.multipleTable.clearSelection();
+      this.$refs.multipleTable.toggleRowSelection(val);
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if (this.multipleSelection.length > 1) {
+        this.$refs.editButton.disabled = true;
+        this.$refs.delButton.disabled = true;
+      } else {
+        this.$refs.editButton.disabled = false;
+        this.$refs.delButton.disabled = false;
+      }
+    },
+    handleSelectionEdit() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleEdit(this.multipleSelection[0]);
+    },
+    handleSelectionDel() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleDelete(this.multipleSelection[0]);
     }
   }
 };

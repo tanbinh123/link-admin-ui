@@ -54,3 +54,11 @@ export function queryDataScope(id) {
     params: { id }
   })
 }
+
+export function updateState(data) {
+  return request({
+    url: `/rest/role/updateState`,
+    method: 'post',
+    data
+  })
+}

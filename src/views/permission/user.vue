@@ -65,20 +65,23 @@
                 icon="el-icon-plus"
                 @click="handleCreate"
               >新增</el-button>
-              <!-- <el-button
+              <el-button
+                ref="editButton"
                 v-permission="[permission.edit]"
                 class="filter-item"
                 type="success"
                 icon="el-icon-edit"
-              >修改</el-button>
+                @click="handleSelectionEdit"
+              >编辑</el-button>
               <el-button
-                slot="reference"
+                ref="delButton"
                 v-permission="[permission.del]"
                 class="filter-item"
                 type="danger"
                 icon="el-icon-delete"
+                @click="handleSelectionDel"
               >删除</el-button>
-              <el-button
+              <!--   <el-button
                 v-permission="permission.download"
                 class="filter-item"
                 type="warning"
@@ -92,7 +95,7 @@
                   <el-button slot="reference" icon="el-icon-s-grid">
                     <i class="fa fa-caret-down" aria-hidden="true" />
                   </el-button>
-                  <el-checkbox v-model="allColumnsSelected" @change="handleCheckAllChange">全选</el-checkbox>
+                  <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
                   <el-checkbox
                     v-for="item in tableColumns"
                     :key="item.property"
@@ -103,18 +106,18 @@
             </div>
           </div>
           <el-table
+            ref="multipleTable"
             :key="tableKey"
             v-loading="listLoading"
             :data="list"
             style="width: 100%;"
             height="450"
             border
+            highlight-current-row
+            @selection-change="handleSelectionChange"
+            @current-change="handleCurrentChange"
           >
-            <el-table-column width="50">
-              <template slot-scope="scope">
-                <span>{{ scope.$index+(listQuery.page - 1) * listQuery.limit + 1 }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column type="selection"></el-table-column>
             <el-table-column prop="name" label="账号" width="100" />
             <el-table-column prop="vserName" label="真实姓名" width="100" />
             <el-table-column prop="mobile" label="手机" width="150" />
@@ -138,13 +141,13 @@
                   v-permission="[permission.edit]"
                   type="text"
                   size="small"
-                  @click="handleEdit(scope)"
+                  @click="handleEdit(scope.row)"
                 >编辑</el-button>
                 <el-button
                   v-permission="[permission.del]"
                   type="text"
                   size="small"
-                  @click="handleDelete(scope)"
+                  @click="handleDelete(scope.row)"
                 >删除</el-button>
               </template>
             </el-table-column>
@@ -313,6 +316,9 @@ export default {
         { label: "启用", value: 1 }
       ],
       user: Object.assign({}, defaultUser),
+      allColumnsSelected: [],
+      tableColumns: [],
+      multipleSelection: [],
       defaultProps: {
         children: "childrens",
         label: "name"
@@ -459,12 +465,12 @@ export default {
       this.dialogVisible = true;
       this.user = Object.assign({}, defaultUser);
     },
-    handleEdit(scope) {
+    handleEdit(row) {
       this.dialogType = "edit";
       this.activeName = "first";
       this.dialogVisible = true;
-      scope.row.roleIds = [];
-      this.user = deepClone(scope.row);
+      row.roleIds = [];
+      this.user = deepClone(row);
       if (this.user.roles) {
         const roleIds = this.user.roleIds;
         this.user.roles.forEach(role => {
@@ -499,7 +505,7 @@ export default {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },
-    handleDelete({ row }) {
+    handleDelete(row) {
       this.$confirm("确认删除?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -517,6 +523,34 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    handleCurrentChange(val) {
+      this.$refs.multipleTable.clearSelection();
+      this.$refs.multipleTable.toggleRowSelection(val);
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if (this.multipleSelection.length > 1) {
+        this.$refs.editButton.disabled = true;
+        this.$refs.delButton.disabled = true;
+      } else {
+        this.$refs.editButton.disabled = false;
+        this.$refs.delButton.disabled = false;
+      }
+    },
+    handleSelectionEdit() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleEdit(this.multipleSelection[0]);
+    },
+    handleSelectionDel() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleDelete(this.multipleSelection[0]);
     }
   }
 };

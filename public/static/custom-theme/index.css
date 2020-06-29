@@ -540,12 +540,11 @@ aside {
   .link-type:focus:hover {
     color: #20a0ff; }
 
-.filter-container {
-  padding-bottom: 10px; }
   .filter-container .filter-item {
     display: inline-block;
     vertical-align: middle;
-    margin-bottom: 10px; }
+    margin-bottom: 10px;
+    margin-right: 10px; }
 
 .multiselect {
   line-height: 16px; }

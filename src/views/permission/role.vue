@@ -15,28 +15,90 @@
         icon="el-icon-search"
         @click="handleSearch"
       >查找</el-button>
-      <el-button
-        v-permission="[permission.add]"
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        @click="handleCreate"
-      >
-        <i class="el-icon-plus" /> 新增
-      </el-button>
     </div>
-
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <el-button
+          v-permission="[permission.add]"
+          class="filter-item"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCreate"
+        >新增</el-button>
+        <el-button
+          ref="editButton"
+          v-permission="[permission.edit]"
+          class="filter-item"
+          type="success"
+          icon="el-icon-edit"
+          @click="handleSelectionEdit"
+        >编辑</el-button>
+        <el-button
+          ref="dataScopeButton"
+          v-permission="[permission.datascope]"
+          class="filter-item"
+          type="success"
+          icon="el-icon-edit"
+          @click="handleSelectionDataScope"
+        >数据权限</el-button>
+        <el-button
+          ref="delButton"
+          v-permission="[permission.del]"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleSelectionDel"
+        >删除</el-button>
+        <!--   <el-button
+                v-permission="permission.download"
+                class="filter-item"
+                type="warning"
+                icon="el-icon-download"
+        >导出</el-button>-->
+      </div>
+      <div class="table-toolbar-right">
+        <el-button-group>
+          <el-button icon="el-icon-refresh" @click="handleSearch" />
+          <el-popover placement="bottom-end" width="150" trigger="click">
+            <el-button slot="reference" icon="el-icon-s-grid">
+              <i class="fa fa-caret-down" aria-hidden="true" />
+            </el-button>
+            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
+            <el-checkbox
+              v-for="item in tableColumns"
+              :key="item.property"
+              v-model="item.visible"
+            >{{ item.label }}</el-checkbox>
+          </el-popover>
+        </el-button-group>
+      </div>
+    </div>
     <el-table
+      ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
       style="width: 100%;"
       height="450"
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+      @current-change="handleCurrentChange"
     >
+      <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="角色名" />
       <!-- <el-table-column prop="levels" label="级别"></el-table-column> -->
       <el-table-column prop="data_scope" label="数据权限" :formatter="formatDataScope" />
+      <el-table-column label="禁用/启用">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.state"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleStateChange(scope.row)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column prop="description" label="描述" />
 
       <el-table-column label="操作">
@@ -51,13 +113,13 @@
             v-permission="[permission.edit]"
             type="text"
             size="small"
-            @click="handleEdit(scope)"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
           <el-button
             v-permission="[permission.del]"
             type="text"
             size="small"
-            @click="handleDelete(scope)"
+            @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -149,7 +211,8 @@ import {
   updateRole,
   deleteRole,
   saveDataScope,
-  queryDataScope
+  queryDataScope,
+  updateState
 } from "@/api/permission/role";
 import { permissions, permissionsByRole } from "@/api/permission/permission";
 import { departments } from "@/api/permission/department";
@@ -186,6 +249,9 @@ export default {
         limit: 10,
         name: ""
       },
+      allColumnsSelected: [],
+      tableColumns: [],
+      multipleSelection: [],
       role: Object.assign({}, defaultRole),
       dialogVisible: false,
       dialogType: "new",
@@ -293,6 +359,30 @@ export default {
         this.selectedParent(currentNode.parent);
       }
     },
+    // 状态修改
+    handleStateChange(row) {
+      const text = row.state === 1 ? "启用" : "停用";
+      this.$confirm(
+        "确认要 [" + text + "] [" + row.name + "] 岗位吗?",
+        "警告",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(async () => {
+          await updateState({ id: row.id, state: row.state });
+          this.$message({
+            message: text + "成功",
+            type: "success"
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          row.state = row.state === 0 ? 1 : 0;
+        });
+    },
     handleCreate() {
       this.role = Object.assign({}, defaultRole);
       if (this.$refs.tree) {
@@ -315,11 +405,11 @@ export default {
       });
       return data;
     },
-    async handleEdit(scope) {
+    async handleEdit(row) {
       this.dialogType = "edit";
       this.dialogVisible = true;
       this.checkStrictly = true;
-      this.role = deepClone(scope.row);
+      this.role = deepClone(row);
       const res = await permissionsByRole(this.role.id);
       this.permissionsByRole = res.result;
       this.$nextTick(() => {
@@ -348,7 +438,7 @@ export default {
       });
       this.getList();
     },
-    handleDelete({ row }) {
+    handleDelete(row) {
       this.$confirm("确认删除角色?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -394,6 +484,43 @@ export default {
         });
         this.getList();
       }
+    },
+    handleCurrentChange(val) {
+      this.$refs.multipleTable.clearSelection();
+      this.$refs.multipleTable.toggleRowSelection(val);
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if (this.multipleSelection.length > 1) {
+        this.$refs.editButton.disabled = true;
+        this.$refs.delButton.disabled = true;
+        this.$refs.dataScopeButton.disabled = true;
+      } else {
+        this.$refs.editButton.disabled = false;
+        this.$refs.delButton.disabled = false;
+        this.$refs.dataScopeButton.disabled = false;
+      }
+    },
+    handleSelectionEdit() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleEdit(this.multipleSelection[0]);
+    },
+    handleSelectionDataScope() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleDataScope(this.multipleSelection[0]);
+    },
+    handleSelectionDel() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleDelete(this.multipleSelection[0]);
     }
   }
 };

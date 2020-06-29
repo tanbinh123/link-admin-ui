@@ -9,25 +9,69 @@
       />
 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
-      <el-button
-        v-permission="[permission.add]"
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        @click="handleCreate"
-      >
-        <i class="el-icon-plus" /> 新增
-      </el-button>
     </div>
-
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <el-button
+          v-permission="[permission.add]"
+          class="filter-item"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCreate"
+        >新增</el-button>
+        <el-button
+          ref="editButton"
+          v-permission="[permission.edit]"
+          class="filter-item"
+          type="success"
+          icon="el-icon-edit"
+          @click="handleSelectionEdit"
+        >编辑</el-button>
+        <el-button
+          ref="delButton"
+          v-permission="[permission.del]"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleSelectionDel"
+        >删除</el-button>
+        <!--   <el-button
+                v-permission="permission.download"
+                class="filter-item"
+                type="warning"
+                icon="el-icon-download"
+        >导出</el-button>-->
+      </div>
+      <div class="table-toolbar-right">
+        <el-button-group>
+          <el-button icon="el-icon-refresh" @click="handleSearch" />
+          <el-popover placement="bottom-end" width="150" trigger="click">
+            <el-button slot="reference" icon="el-icon-s-grid">
+              <i class="fa fa-caret-down" aria-hidden="true" />
+            </el-button>
+            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
+            <el-checkbox
+              v-for="item in tableColumns"
+              :key="item.property"
+              v-model="item.visible"
+            >{{ item.label }}</el-checkbox>
+          </el-popover>
+        </el-button-group>
+      </div>
+    </div>
     <el-table
+      ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
       style="width: 100%;"
       height="450"
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+      @current-change="handleCurrentChange"
     >
+      <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="岗位名" />
       <el-table-column label="禁用/启用">
         <template slot-scope="scope">
@@ -47,13 +91,13 @@
             v-permission="[permission.edit]"
             type="text"
             size="small"
-            @click="handleEdit(scope)"
+            @click="handleEdit(scope.row)"
           >编辑</el-button>
           <el-button
             v-permission="[permission.del]"
             type="text"
             size="small"
-            @click="handleDelete(scope)"
+            @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -132,6 +176,9 @@ export default {
         limit: 10,
         name: ""
       },
+      allColumnsSelected: [],
+      tableColumns: [],
+      multipleSelection: [],
       job: Object.assign({}, defaultJob),
       dialogVisible: false,
       dialogType: "new",
@@ -191,11 +238,11 @@ export default {
       this.dialogType = "new";
       this.dialogVisible = true;
     },
-    handleEdit(scope) {
+    handleEdit(row) {
       this.dialogType = "edit";
       this.dialogVisible = true;
       this.checkStrictly = true;
-      this.job = deepClone(scope.row);
+      this.job = deepClone(row);
     },
     async confirmRole() {
       const isEdit = this.dialogType === "edit";
@@ -212,7 +259,7 @@ export default {
       });
       this.getList();
     },
-    handleDelete({ row }) {
+    handleDelete(row) {
       this.$confirm("确认删除?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -230,6 +277,34 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    handleCurrentChange(val) {
+      this.$refs.multipleTable.clearSelection();
+      this.$refs.multipleTable.toggleRowSelection(val);
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      if (this.multipleSelection.length > 1) {
+        this.$refs.editButton.disabled = true;
+        this.$refs.delButton.disabled = true;
+      } else {
+        this.$refs.editButton.disabled = false;
+        this.$refs.delButton.disabled = false;
+      }
+    },
+    handleSelectionEdit() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleEdit(this.multipleSelection[0]);
+    },
+    handleSelectionDel() {
+      if (this.multipleSelection.length != 1) {
+        this.$message.error("请选择一条数据");
+        return;
+      }
+      this.handleDelete(this.multipleSelection[0]);
     }
   }
 };
