@@ -70,6 +70,6 @@ npm run build
 ## 加入讨论组
 
  <p align="left">
-  <img width="300" src="https://252956.github.io/static/img/dingding.jpg">
+
 </p>
 
