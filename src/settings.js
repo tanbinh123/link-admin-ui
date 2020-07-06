@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Vue Link Admin',
-
+  layout: 'top',
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel

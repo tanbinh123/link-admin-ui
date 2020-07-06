@@ -1,9 +1,10 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo, size, device, sidebarColor, colorWeak } = defaultSettings
+const { layout, showSettings, tagsView, fixedHeader, sidebarLogo, size, device, sidebarColor, colorWeak } = defaultSettings
 
 const state = {
+  layout: localStorage.getItem('layout') || layout,
   sidebar: {
     opened: localStorage.getItem('sidebarStatus') !== null ? JSON.parse(localStorage.getItem('sidebarStatus')) : true,
     withoutAnimation: false
