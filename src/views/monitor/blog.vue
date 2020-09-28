@@ -46,8 +46,7 @@
             class="filter-item"
             type="primary"
             icon="el-icon-search"
-            @click="handleSearch"
-            v-permission="['/rest/logs/blog/list']"
+            @click="handleSearch"         
           >查找</el-button>
         </el-form-item>
       </el-form>

@@ -15,6 +15,7 @@
 
 <script>
 import avatarGif from '@/assets/logo.png'
+import settings from '@/settings'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -25,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Link Admin',
+      title: settings.title,
       logo: avatarGif
     }
   }

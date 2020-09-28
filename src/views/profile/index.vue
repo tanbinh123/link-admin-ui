@@ -99,7 +99,7 @@
                     <el-input name="confirmNewPassword" v-model="passwordForm.confirmNewPassword" />
                   </el-form-item>
                   <el-form-item>
-                    <el-button type="primary" @click="submitPassword">修改</el-button>
+                    <el-button type="primary" @click="submitPassword">保存</el-button>
                   </el-form-item>
                 </el-form>
               </el-tab-pane>

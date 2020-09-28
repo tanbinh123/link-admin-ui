@@ -1,6 +1,6 @@
 <template>
   <div @click="click">
-    <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" />
+    <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" width="1em" height="1em"/>
   </div>
 </template>
 

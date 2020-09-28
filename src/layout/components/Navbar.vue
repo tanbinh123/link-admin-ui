@@ -32,9 +32,6 @@
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/252956/vue-link-admin/">
-            <el-dropdown-item>项目地址</el-dropdown-item>
-          </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
@@ -122,7 +119,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 12px;
+      padding: 0 8px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
@@ -143,19 +140,18 @@ export default {
         display: flex;
         align-items: center;
         height: 100%;
-        padding: 0 12px;
+        padding-right: 24px;
         cursor: pointer;
         transition: all 0.3s;
 
         .user-avatar {
-         
           cursor: pointer;
           width: 30px;
           height: 30px;
           border-radius: 10px;
         }
         .user-name {
-           margin-left: 10px;
+          margin-left: 10px;
           font-size: 14px;
         }
 
