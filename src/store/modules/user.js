@@ -4,7 +4,7 @@ import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  userinfo: {},
+  userinfo: null,
   roles: [],
   menus: [],
   permissions: []
@@ -84,7 +84,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_USER', {})
+        commit('SET_USER', null)
         commit('SET_ROLES', [])
         commit('SET_MENUS', [])
         commit('SET_PERMISSIONS', [])

@@ -1,6 +1,6 @@
 {
   "name": "vue-link-admin",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "CommonJs package",
   "author": "xyy12611@163.com",
   "license": "MIT",
@@ -26,17 +26,14 @@
     "url": "https://github.com/252956/vue-link-admin/issues"
   },
   "dependencies": {
+    "@antv/g2": "^4.0.15",
     "@riophae/vue-treeselect": "^0.4.0",
     "axios": "0.18.1",
-    "core-js": "^3.6.4",
-    "vue": "^2.6.11",
-    "vue-router": "3.0.2",
-    "vuex": "3.1.0",
     "clipboard": "2.0.4",
     "codemirror": "5.45.0",
+    "core-js": "^3.6.4",
     "driver.js": "0.9.5",
     "dropzone": "5.5.1",
-    "echarts": "4.2.1",
     "element-ui": "^2.12.0",
     "file-saver": "2.0.1",
     "fuse.js": "3.4.4",
@@ -49,10 +46,13 @@
     "screenfull": "4.2.0",
     "showdown": "1.9.1",
     "tui-editor": "1.3.3",
+    "vue": "^2.6.11",
     "vue-count-to": "1.0.13",
+    "vue-router": "3.0.2",
     "vue-splitpane": "1.0.4",
     "vue-swipe": "^2.4.0",
     "vuedraggable": "2.20.0",
+    "vuex": "3.1.0",
     "xlsx": "0.14.1"
   },
   "devDependencies": {

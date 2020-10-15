@@ -27,19 +27,19 @@
               <span>{{ node.label }}</span>
               <span>
                 <el-button
-                  v-permission="[permission.add]"
+                  v-action="permission.add"
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
                 >添加子项</el-button>
                 <el-button
-                  v-permission="[permission.edit]"
+                  v-action="permission.edit"
                   type="text"
                   size="mini"
                   @click="() => handleEdit(node,data)"
                 >编辑</el-button>
                 <el-button
-                  v-permission="[permission.del]"
+                  v-action="permission.del"
                   type="text"
                   size="mini"
                   @click="() => handleDelete(data)"
@@ -96,7 +96,7 @@
 import Treeselect from "@riophae/vue-treeselect";
 // import the styles
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import permission from "@/directive/permission/index.js"; // 权限判断指令
+
 import {
   departments,
   addDpartment,
@@ -115,7 +115,6 @@ const defaultDepartment = {
 export default {
   name: "Department",
   components: { Treeselect },
-  directives: { permission },
   data() {
     return {
       permission: {

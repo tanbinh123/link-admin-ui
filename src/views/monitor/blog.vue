@@ -58,7 +58,7 @@
       :data="list"
       border
       style="width: 100%;"
-      height="450"
+      height="400"
     >
       <el-table-column width="50" label="#">
         <template slot-scope="scope">
@@ -144,14 +144,12 @@
   </div>
 </template>
 <script>
-import permission from "@/directive/permission/index.js"; // 权限判断指令
 import { blogList } from "@/api/logs/blog";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 import { getDateTime, formatDateTime, offsetMinute } from "@/utils";
 export default {
   name: "Blog",
   components: { Pagination },
-  directives: { permission },
   data() {
     return {
       tableKey: 0,

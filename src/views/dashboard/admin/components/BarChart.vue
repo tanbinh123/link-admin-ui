@@ -1,102 +1,85 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div id="barChart" :class="className" :style="{ height: height, width: width }" />
 </template>
 
 <script>
-import echarts from 'echarts'
-require('echarts/theme/macarons') // echarts theme
-import resize from './mixins/resize'
+import { Chart } from "@antv/g2";
+import resize from "./mixins/resize";
 
-const animationDuration = 6000
+const animationDuration = 6000;
 
 export default {
   mixins: [resize],
   props: {
     className: {
       type: String,
-      default: 'chart'
+      default: "chart",
     },
     width: {
       type: String,
-      default: '100%'
+      default: "100%",
     },
     height: {
       type: String,
-      default: '300px'
-    }
+      default: "300px",
+    },
   },
   data() {
     return {
-      chart: null
-    }
+    };
   },
   mounted() {
     this.$nextTick(() => {
-      this.initChart()
-    })
+      this.initChart();
+    });
   },
-  beforeDestroy() {
-    if (!this.chart) {
-      return
-    }
-    this.chart.dispose()
-    this.chart = null
-  },
+
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+      const data = [
+        { name: "London", 月份: "Jan.", 月均降雨量: 18.9 },
+        { name: "London", 月份: "Feb.", 月均降雨量: 28.8 },
+        { name: "London", 月份: "Mar.", 月均降雨量: 39.3 },
+        { name: "London", 月份: "Apr.", 月均降雨量: 81.4 },
+        { name: "London", 月份: "May", 月均降雨量: 47 },
+        { name: "London", 月份: "Jun.", 月均降雨量: 20.3 },
+        { name: "London", 月份: "Jul.", 月均降雨量: 24 },
+        { name: "London", 月份: "Aug.", 月均降雨量: 35.6 },
+        { name: "Berlin", 月份: "Jan.", 月均降雨量: 12.4 },
+        { name: "Berlin", 月份: "Feb.", 月均降雨量: 23.2 },
+        { name: "Berlin", 月份: "Mar.", 月均降雨量: 34.5 },
+        { name: "Berlin", 月份: "Apr.", 月均降雨量: 99.7 },
+        { name: "Berlin", 月份: "May", 月均降雨量: 52.6 },
+        { name: "Berlin", 月份: "Jun.", 月均降雨量: 35.5 },
+        { name: "Berlin", 月份: "Jul.", 月均降雨量: 37.4 },
+        { name: "Berlin", 月份: "Aug.", 月均降雨量: 42.4 },
+      ];
 
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: { // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        grid: {
-          top: 10,
-          left: '2%',
-          right: '2%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [{
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          axisTick: {
-            alignWithLabel: true
-          }
-        }],
-        yAxis: [{
-          type: 'value',
-          axisTick: {
-            show: false
-          }
-        }],
-        series: [{
-          name: 'pageA',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageB',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }]
-      })
-    }
-  }
-}
+      const chart = new Chart({
+        container: "barChart",
+        autoFit: true,
+        height: 300,
+      });
+
+      chart.data(data);
+      chart.scale("月均降雨量", {
+        nice: true,
+      });
+      chart.tooltip({
+        shared: true,
+        showMarkers: false,
+      });
+
+      chart
+        .interval()
+        .position("月份*月均降雨量")
+        .color("name")
+        .adjust("stack");
+
+      chart.interaction("active-region");
+
+      chart.render();
+    },
+  },
+};
 </script>

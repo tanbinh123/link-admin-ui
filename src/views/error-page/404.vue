@@ -12,7 +12,8 @@
    
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">请检查您输入的网址是否正确，或单击下面的按钮返回主页.</div>
-        <a href="" class="bullshit__return-home">返回</a>
+        <a href="/" class="bullshit__return-home">返回</a>
+        
       </div>
     </div>
   </div>
@@ -32,10 +33,9 @@ export default {
 
 <style lang="scss" scoped>
 .wscn-http404-container{
-  transform: translate(-50%,-50%);
-  position: absolute;
-  top: 40%;
-  left: 50%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 80px;
 }
 .wscn-http404 {
   position: relative;

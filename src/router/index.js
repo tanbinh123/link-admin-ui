@@ -92,19 +92,7 @@ export const constantRoutes = [
     path: '/pdf/download',
     component: () => import('@/views/component/pdf/download'),
     hidden: true
-  },
-  {
-    path: '/citycontrol',
-    component: Layout,
-    children: [
-      {
-        path: 'citycontrol',
-        component: () => import('@/views/component/citycontrol'),
-        name: 'CityControlDemo',
-        meta: { title: '城市控件', icon: 'component', noCache: true }
-      }
-    ]
-  },
+  }
 ]
 
 const createRouter = () => new Router({

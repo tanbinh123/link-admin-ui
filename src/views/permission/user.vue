@@ -30,7 +30,7 @@
         </el-col>
         <el-col :span="8">
           <el-button
-            v-permission="[permission.list]"
+            v-action="permission.list"
             class="filter-item"
             type="primary"
             icon="el-icon-search"
@@ -59,7 +59,7 @@
           <div class="table-toolbar">
             <div class="table-toolbar-left">
               <el-button
-                v-permission="[permission.add]"
+                v-action="permission.add"
                 class="filter-item"
                 type="primary"
                 icon="el-icon-plus"
@@ -67,7 +67,7 @@
               >新增</el-button>
               <el-button
                 ref="editButton"
-                v-permission="[permission.edit]"
+                v-action="permission.edit"
                 class="filter-item"
                 type="success"
                 icon="el-icon-edit"
@@ -75,14 +75,14 @@
               >编辑</el-button>
               <el-button
                 ref="delButton"
-                v-permission="[permission.del]"
+                v-action="permission.del"
                 class="filter-item"
                 type="danger"
                 icon="el-icon-delete"
                 @click="handleSelectionDel"
               >删除</el-button>
               <!--   <el-button
-                v-permission="permission.download"
+                v-action="permission.download"
                 class="filter-item"
                 type="warning"
                 icon="el-icon-download"
@@ -111,7 +111,7 @@
             v-loading="listLoading"
             :data="list"
             style="width: 100%;"
-            height="450"
+            height="400"
             border
             highlight-current-row
             @selection-change="handleSelectionChange"
@@ -122,8 +122,8 @@
             <el-table-column prop="vserName" label="真实姓名" width="100" />
             <el-table-column prop="mobile" label="手机" width="150" />
             <!-- <el-table-column prop="email" label="邮箱" width="180"></el-table-column> -->
-            <el-table-column prop="deptName" label="部门/岗位" width="210" :formatter="formatDept" />
-            <el-table-column prop="roleName" label="角色" width="180" :formatter="formatRole" />
+            <el-table-column prop="deptName" label="部门/岗位" width="180" :formatter="formatDept" />
+            <el-table-column prop="roleName" label="角色" width="150" :formatter="formatRole" />
 
             <el-table-column label="禁用/启用" width="85">
               <template slot-scope="scope">
@@ -135,16 +135,16 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" >
               <template slot-scope="scope">
                 <el-button
-                  v-permission="[permission.edit]"
+                  v-action="permission.edit"
                   type="text"
                   size="small"
                   @click="handleEdit(scope.row)"
                 >编辑</el-button>
                 <el-button
-                  v-permission="[permission.del]"
+                  v-action="permission.del"
                   type="text"
                   size="small"
                   @click="handleDelete(scope.row)"
