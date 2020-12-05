@@ -4,83 +4,60 @@
       <el-input
         v-model="listQuery.name"
         placeholder="角色名"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
       />
 
-      <el-button
-        v-action="permission.list"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleSearch"
-      >查找</el-button>
-    </div>
-    <div class="table-toolbar">
-      <div class="table-toolbar-left">
-        <el-button
-          v-action="permission.add"
-          class="filter-item"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate"
-        >新增</el-button>
-        <el-button
-          ref="editButton"
-          v-action="permission.edit"
-          class="filter-item"
-          type="success"
-          icon="el-icon-edit"
-          @click="handleSelectionEdit"
-        >编辑</el-button>
-        <el-button
-          ref="dataScopeButton"
-          v-action="permission.datascope"
-          class="filter-item"
-          type="success"
-          icon="el-icon-edit"
-          @click="handleSelectionDataScope"
-        >数据权限</el-button>
-        <el-button
-          ref="delButton"
-          v-action="permission.del"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleSelectionDel"
-        >删除</el-button>
-        <!--   <el-button
-                v-action="permission.download"
-                class="filter-item"
-                type="warning"
-                icon="el-icon-download"
-        >导出</el-button>-->
-      </div>
-      <div class="table-toolbar-right">
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        >查找</el-button
+      >
+
+      <div class="toolbar-right">
         <el-button-group>
-          <el-button icon="el-icon-refresh" @click="handleSearch" />
-          <el-popover placement="bottom-end" width="150" trigger="click">
-            <el-button slot="reference" icon="el-icon-s-grid">
-              <i class="fa fa-caret-down" aria-hidden="true" />
-            </el-button>
-            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
-            <el-checkbox
-              v-for="item in tableColumns"
-              :key="item.property"
-              v-model="item.visible"
-            >{{ item.label }}</el-checkbox>
-          </el-popover>
+          <el-button
+             v-action="permission.add"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate"
+            >新增</el-button
+          >
+          <el-button
+            ref="editButton"
+             v-action="permission.edit"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleSelectionEdit"
+            >编辑</el-button
+          >
+          <el-button
+            ref="dataScopeButton"
+             v-action="permission.datascope"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleSelectionDataScope"
+            >数据权限</el-button
+          >
+          <el-button
+            ref="delButton"
+             v-action="permission.del"
+            type="primary"
+            icon="el-icon-delete"
+            @click="handleSelectionDel"
+            >删除</el-button
+          >
+         
         </el-button-group>
       </div>
     </div>
+
     <el-table
       ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
-      style="width: 100%;"
-      height="400"
+      style="width: 100%"
+      height="450"
       highlight-current-row
       @selection-change="handleSelectionChange"
       @current-change="handleCurrentChange"
@@ -88,7 +65,11 @@
       <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="角色名" />
       <!-- <el-table-column prop="levels" label="级别"></el-table-column> -->
-      <el-table-column prop="data_scope" label="数据权限" :formatter="formatDataScope" />
+      <el-table-column
+        prop="data_scope"
+        label="数据权限"
+        :formatter="formatDataScope"
+      />
       <el-table-column label="禁用/启用">
         <template slot-scope="scope">
           <el-switch
@@ -104,34 +85,40 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            v-action="permission.datascope"
+             v-action="permission.datascope"
             size="small"
             type="text"
             @click="handleDataScope(scope.row)"
-          >数据权限</el-button>
+            >数据权限</el-button
+          >
           <el-button
-            v-action="permission.edit"
+             v-action="permission.edit"
             type="text"
             size="small"
             @click="handleEdit(scope.row)"
-          >编辑</el-button>
+            >编辑</el-button
+          >
           <el-button
-            v-action="permission.del"
+             v-action="permission.del"
             type="text"
             size="small"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+    >
       <el-form
         ref="roleForm"
         :model="role"
@@ -145,7 +132,7 @@
         <el-form-item label="描述">
           <el-input
             v-model="role.description"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             type="textarea"
             placeholder="描述"
           />
@@ -164,14 +151,18 @@
           />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+      <div style="text-align: right">
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmRole">确定</el-button>
       </div>
     </el-dialog>
 
     <!-- 分配角色数据权限对话框 -->
-    <el-dialog :title="'分配数据权限'" :visible.sync="dataScopeDialogVisible" width="500px">
+    <el-dialog
+      :title="'分配数据权限'"
+      :visible.sync="dataScopeDialogVisible"
+      width="500px"
+    >
       <el-form :model="role" label-width="80px">
         <el-form-item label="角色名称">{{ role.name }}</el-form-item>
         <el-form-item label="权限范围">
@@ -196,14 +187,17 @@
           />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dataScopeDialogVisible=false">取消</el-button>
+      <div style="text-align: right">
+        <el-button type="danger" @click="dataScopeDialogVisible = false"
+          >取消</el-button
+        >
         <el-button type="primary" @click="submitDataScope">确定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   roleList,
   addRole,
@@ -211,7 +205,7 @@ import {
   deleteRole,
   saveDataScope,
   queryDataScope,
-  updateState
+  updateState,
 } from "@/api/permission/role";
 import { permissions, permissionsByRole } from "@/api/permission/permission";
 import { departments } from "@/api/permission/department";
@@ -224,11 +218,12 @@ const defaultRole = {
   description: "",
   permIds: [],
   data_scope: undefined,
-  deptIds: []
+  deptIds: [],
 };
 export default {
   name: "Role",
   components: { Pagination },
+  directives: { permission },
   data() {
     return {
       permission: {
@@ -236,7 +231,7 @@ export default {
         add: "role:add",
         edit: "role:edit",
         del: "role:del",
-        datascope: "role:datascope"
+        datascope: "role:datascope",
       },
       tableKey: 0,
       list: null,
@@ -245,7 +240,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        name: ""
+        name: "",
       },
       allColumnsSelected: [],
       tableColumns: [],
@@ -256,7 +251,7 @@ export default {
       checkStrictly: false,
       defaultProps: {
         children: "childrens",
-        label: "name"
+        label: "name",
       },
       permissions: [],
       permissionsByRole: [],
@@ -266,9 +261,14 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入角色名", trigger: "blur" },
-          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
-        ]
-      }
+          {
+            min: 1,
+            max: 15,
+            message: "长度在 1 到 15 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -366,17 +366,17 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         }
       )
         .then(async () => {
           await updateState({ id: row.id, state: row.state });
           this.$message({
             message: text + "成功",
-            type: "success"
+            type: "success",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           row.state = row.state === 0 ? 1 : 0;
         });
@@ -392,7 +392,7 @@ export default {
     },
     generateArr(routes) {
       let data = [];
-      routes.forEach(route => {
+      routes.forEach((route) => {
         data.push(route);
         if (route.childrens) {
           const temp = this.generateArr(route.childrens);
@@ -432,7 +432,7 @@ export default {
       this.$message({
         showClose: true,
         message: "保存成功",
-        type: "success"
+        type: "success",
       });
       this.getList();
     },
@@ -440,18 +440,18 @@ export default {
       this.$confirm("确认删除角色?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           await deleteRole(row.id);
           this.$message({
             showClose: true,
             message: "删除成功",
-            type: "success"
+            type: "success",
           });
           this.getList();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -478,7 +478,7 @@ export default {
         this.$message({
           showClose: true,
           message: "操作成功",
-          type: "success"
+          type: "success",
         });
         this.getList();
       }
@@ -519,7 +519,7 @@ export default {
         return;
       }
       this.handleDelete(this.multipleSelection[0]);
-    }
-  }
+    },
+  },
 };
 </script>

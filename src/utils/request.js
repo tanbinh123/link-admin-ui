@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import defaultSettings from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -19,7 +20,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['LinkAdmin-Token'] = getToken()
+      config.headers[defaultSettings.token] = getToken()
     }
     return config
   },

@@ -33,7 +33,7 @@
                   @click="() => handleCreate(data)"
                 >添加子项</el-button>
                 <el-button
-                  v-action="curdPermission.edit"
+                   v-action="curdPermission.edit"
                   type="text"
                   size="mini"
                   @click="() => handleEdit(node,data)"
@@ -165,6 +165,7 @@ import Treeselect from "@riophae/vue-treeselect";
 // import the styles
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import IconSelect from "@/components/IconSelect";
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   permissions,
   addPermission,
@@ -191,6 +192,7 @@ const defaultPermission = {
 export default {
   name: "Permission",
   components: { Treeselect, IconSelect },
+  directives: { permission },
   data() {
     return {
       curdPermission: {

@@ -4,69 +4,51 @@
       <el-input
         v-model="listQuery.name"
         placeholder="岗位名"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
       />
 
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
-    </div>
-    <div class="table-toolbar">
-      <div class="table-toolbar-left">
-        <el-button
-          v-action="permission.add"
-          class="filter-item"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate"
-        >新增</el-button>
-        <el-button
-          ref="editButton"
-          v-action="permission.edit"
-          class="filter-item"
-          type="success"
-          icon="el-icon-edit"
-          @click="handleSelectionEdit"
-        >编辑</el-button>
-        <el-button
-          ref="delButton"
-          v-action="permission.del"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleSelectionDel"
-        >删除</el-button>
-        <!--   <el-button
-                v-action="permission.download"
-                class="filter-item"
-                type="warning"
-                icon="el-icon-download"
-        >导出</el-button>-->
-      </div>
-      <div class="table-toolbar-right">
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        >查找</el-button
+      >
+
+      <div class="toolbar-right">
         <el-button-group>
-          <el-button icon="el-icon-refresh" @click="handleSearch" />
-          <el-popover placement="bottom-end" width="150" trigger="click">
-            <el-button slot="reference" icon="el-icon-s-grid">
-              <i class="fa fa-caret-down" aria-hidden="true" />
-            </el-button>
-            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
-            <el-checkbox
-              v-for="item in tableColumns"
-              :key="item.property"
-              v-model="item.visible"
-            >{{ item.label }}</el-checkbox>
-          </el-popover>
+          <el-button
+            v-action="permission.add"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate"
+            >新增</el-button
+          >
+          <el-button
+            ref="editButton"
+            v-action="permission.edit"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleSelectionEdit"
+            >编辑</el-button
+          >
+          <el-button
+            ref="delButton"
+            v-action="permission.del"
+            type="primary"
+            icon="el-icon-delete"
+            @click="handleSelectionDel"
+            >删除</el-button
+          >
         </el-button-group>
       </div>
     </div>
+
     <el-table
       ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
-      style="width: 100%;"
-      height="400"
+      style="width: 100%"
+      height="450"
       highlight-current-row
       @selection-change="handleSelectionChange"
       @current-change="handleCurrentChange"
@@ -92,25 +74,36 @@
             type="text"
             size="small"
             @click="handleEdit(scope.row)"
-          >编辑</el-button>
+            >编辑</el-button
+          >
           <el-button
             v-action="permission.del"
             type="text"
             size="small"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form ref="form" :model="job" :rules="rules" label-position="right" label-width="80px">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+    >
+      <el-form
+        ref="form"
+        :model="job"
+        :rules="rules"
+        label-position="right"
+        label-width="80px"
+      >
         <el-form-item label="岗位名" prop="name">
           <el-input v-model="job.name" placeholder="岗位名" />
         </el-form-item>
@@ -126,25 +119,25 @@
             :min="0"
             :max="999"
             controls-position="right"
-            style="width: 178px;"
+            style="width: 178px"
           />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+      <div style="text-align: right">
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmRole">确定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   jobList,
   addJob,
   updateJob,
   updateState,
-  deleteJob
+  deleteJob,
 } from "@/api/permission/job";
 
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
@@ -153,19 +146,19 @@ const defaultJob = {
   id: undefined,
   name: "",
   state: 1,
-  sorts: undefined
+  sorts: undefined,
 };
 export default {
   name: "Job",
   components: { Pagination },
-
+  directives: { permission },
   data() {
     return {
       permission: {
         list: "job:list",
         add: "job:add",
         edit: "job:edit",
-        del: "job:del"
+        del: "job:del",
       },
       tableKey: 0,
       list: null,
@@ -174,7 +167,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        name: ""
+        name: "",
       },
       allColumnsSelected: [],
       tableColumns: [],
@@ -185,10 +178,15 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入岗位名", trigger: "blur" },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 15,
+            message: "长度在 2 到 15 个字符",
+            trigger: "blur",
+          },
         ],
-        state: [{ required: true, message: "请选择状态", trigger: "change" }]
-      }
+        state: [{ required: true, message: "请选择状态", trigger: "change" }],
+      },
     };
   },
   created() {
@@ -219,17 +217,17 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         }
       )
         .then(async () => {
           await updateState({ id: row.id, state: row.state });
           this.$message({
             message: text + "成功",
-            type: "success"
+            type: "success",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           row.state = row.state === 0 ? 1 : 0;
         });
@@ -255,7 +253,7 @@ export default {
       this.$message({
         showClose: true,
         message: "保存成功",
-        type: "success"
+        type: "success",
       });
       this.getList();
     },
@@ -263,18 +261,18 @@ export default {
       this.$confirm("确认删除?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           await deleteJob(row.id);
           this.$message({
             showClose: true,
             message: "删除成功",
-            type: "success"
+            type: "success",
           });
           this.getList();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -305,7 +303,7 @@ export default {
         return;
       }
       this.handleDelete(this.multipleSelection[0]);
-    }
-  }
+    },
+  },
 };
 </script>

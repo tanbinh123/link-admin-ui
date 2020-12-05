@@ -4,69 +4,51 @@
       <el-input
         v-model="listQuery.data_type"
         placeholder="请输入类型/key/value"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
       />
 
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">查找</el-button>
-    </div>
-    <div class="table-toolbar">
-      <div class="table-toolbar-left">
-        <el-button
-          v-action="permission.add"
-          class="filter-item"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate"
-        >新增</el-button>
-        <el-button
-          ref="editButton"
-          v-action="permission.edit"
-          class="filter-item"
-          type="success"
-          icon="el-icon-edit"
-          @click="handleSelectionEdit"
-        >编辑</el-button>
-        <el-button
-          ref="delButton"
-          v-action="permission.del"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleSelectionDel"
-        >删除</el-button>
-        <!--   <el-button
-                v-action="permission.download"
-                class="filter-item"
-                type="warning"
-                icon="el-icon-download"
-        >导出</el-button>-->
-      </div>
-      <div class="table-toolbar-right">
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        >查找</el-button
+      >
+      <div class="toolbar-right">
         <el-button-group>
-          <el-button icon="el-icon-refresh" @click="handleSearch" />
-          <el-popover placement="bottom-end" width="150" trigger="click">
-            <el-button slot="reference" icon="el-icon-s-grid">
-              <i class="fa fa-caret-down" aria-hidden="true" />
-            </el-button>
-            <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
-            <el-checkbox
-              v-for="item in tableColumns"
-              :key="item.property"
-              v-model="item.visible"
-            >{{ item.label }}</el-checkbox>
-          </el-popover>
+          <el-button
+             v-action="permission.add"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate"
+            >新增</el-button
+          >
+          <el-button
+            ref="editButton"
+             v-action="permission.edit"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleSelectionEdit"
+            >编辑</el-button
+          >
+          <el-button
+            ref="delButton"
+             v-action="permission.del"
+            type="primary"
+            icon="el-icon-delete"
+            @click="handleSelectionDel"
+            >删除</el-button
+          >
+         
         </el-button-group>
       </div>
     </div>
+
     <el-table
       ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
-      style="width: 100%;"
-      height="400"
+      style="width: 100%"
+      height="450"
       highlight-current-row
       @selection-change="handleSelectionChange"
       @current-change="handleCurrentChange"
@@ -85,20 +67,33 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="small" @click="handleEdit(scope.row)"
+            >编辑</el-button
+          >
+          <el-button type="danger" size="small" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form ref="form" :model="dict" :rules="rules" label-width="80px" label-position="right">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+    >
+      <el-form
+        ref="form"
+        :model="dict"
+        :rules="rules"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item label="Type" prop="data_type">
           <el-input v-model="dict.data_type" placeholder="类型" />
         </el-form-item>
@@ -114,14 +109,14 @@
         <el-form-item label="描述">
           <el-input
             v-model="dict.description"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             type="textarea"
             placeholder="描述"
           />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+      <div style="text-align: right">
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmDict">确定</el-button>
       </div>
     </el-dialog>
@@ -132,7 +127,7 @@ import {
   dictList,
   addDict,
   updateDict,
-  deleteDict
+  deleteDict,
 } from "@/api/permission/dict";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 import { deepClone } from "@/utils";
@@ -142,7 +137,7 @@ const defaultDict = {
   data_key: "",
   data_value: "",
   sorts: undefined,
-  description: ""
+  description: "",
 };
 export default {
   name: "Dict",
@@ -153,7 +148,7 @@ export default {
         list: "dict:list",
         add: "dict:add",
         edit: "dict:edit",
-        del: "dict:del"
+        del: "dict:del",
       },
       tableKey: 0,
       list: null,
@@ -162,7 +157,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        data_type: ""
+        data_type: "",
       },
       allColumnsSelected: [],
       tableColumns: [],
@@ -174,9 +169,9 @@ export default {
         data_type: [{ required: true, message: "请输入type", trigger: "blur" }],
         data_key: [{ required: true, message: "请输入key", trigger: "blur" }],
         data_value: [
-          { required: true, message: "请输入value", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "请输入value", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -219,7 +214,7 @@ export default {
       this.$message({
         showClose: true,
         message: "保存成功",
-        type: "success"
+        type: "success",
       });
       this.getList();
     },
@@ -227,18 +222,18 @@ export default {
       this.$confirm("确认删除吗?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           await deleteDict(row.id);
           this.$message({
             showClose: true,
             message: "删除成功",
-            type: "success"
+            type: "success",
           });
           this.getList();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -269,7 +264,7 @@ export default {
         return;
       }
       this.handleDelete(this.multipleSelection[0]);
-    }
-  }
+    },
+  },
 };
 </script>

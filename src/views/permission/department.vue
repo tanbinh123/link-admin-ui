@@ -96,7 +96,7 @@
 import Treeselect from "@riophae/vue-treeselect";
 // import the styles
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 import {
   departments,
   addDpartment,
@@ -115,6 +115,7 @@ const defaultDepartment = {
 export default {
   name: "Department",
   components: { Treeselect },
+  directives: { permission },
   data() {
     return {
       permission: {

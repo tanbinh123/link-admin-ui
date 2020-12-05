@@ -4,6 +4,7 @@
 @import './element-ui.scss';
 @import './sidebar.scss';
 @import './btn.scss';
+
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -119,9 +120,18 @@ aside {
 }
 
 //main-container全局样式
+.main-container {
+  min-height: 100%;
+  transition: margin-left .28s;
+  margin-left: $sideBarWidth;
+  position: relative;
+  background-color:#f3f3f3;
+}
 .app-container {
-  margin: 24px;
-  padding: 20px;
+  position: relative;
+  margin:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background-color: #fff;
 }
 .colorWeak{
@@ -177,14 +187,34 @@ aside {
 }
 
 .filter-container {
- // padding-bottom: 10px;
-
+ padding-left: 10px;
+ padding-right: 10px;
   .filter-item {
     display: inline-block;
-    vertical-align: middle;
+    // vertical-align: middle;
     margin-bottom: 10px;
     margin-right: 10px;
+    width: 150px;
   }
+}
+.toolbar-right{
+  float: right
+}
+.toolbar-more{
+  position: absolute;
+          background: rgb(255, 255, 255);
+          padding: 5px 0px 0px 10px;
+          box-sizing: border-box;
+          z-index: 999;
+          border-radius: 0px 5px 5px 0px;
+          border-top: 1px solid rgb(240, 240, 240);
+          border-right: 1px solid rgb(240, 240, 240);
+          border-bottom: 1px solid rgb(240, 240, 240);
+          border-left: none;
+          border-image: initial;
+          top: 50px;
+          left: 0;
+          min-width: 800px;
 }
 
 //refine vue-multiselect plugin
@@ -194,24 +224,4 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
-}
-
-.table-toolbar{
-  display: flex;
-  //align-items: center;
-  justify-content: space-between;
-  //height: 60px;
-  padding: 10px 0;
-  .table-toolbar-left{
-    flex: 1 1;
-    color: rgba(0,0,0,.85);
-    font-size: 16px;
-    line-height: 24px;
-    opacity: .85;
-  }
-  .table-toolbar-right{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
 }

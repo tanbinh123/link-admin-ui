@@ -1,25 +1,35 @@
 <template>
   <div class="app-container">
-    <div>
-      <el-row :gutter="10">
-        <el-col :span="4">
-          <el-input
-            v-model="searchDeptName"
-            prefix-icon="el-icon-search"
-            placeholder="请输入部门名称"
-            clearable
-            @clear="clearSearchDept"
-          />
-        </el-col>
-        <el-col :span="4">
-          <el-input v-model="listQuery.name" placeholder="账号" />
-        </el-col>
-        <el-col :span="4">
-          <el-input v-model="listQuery.vserName" placeholder="真实姓名" />
-        </el-col>
+    <el-row>
+      <el-col :span="4">
+        <el-input
+          v-model="searchDeptName"
+          prefix-icon="el-icon-search"
+          placeholder="请输入部门名称"
+          clearable
+          class="filter-item"
+          @clear="clearSearchDept"
+        />
+      </el-col>
 
-        <el-col :span="4">
-          <el-select v-model="listQuery.state" placeholder="用户状态" clearable>
+      <el-col :span="20">
+        <div class="filter-container">
+          <el-input
+            v-model="listQuery.name"
+            class="filter-item"
+            placeholder="账号"
+          />
+          <el-input
+            v-model="listQuery.vserName"
+            class="filter-item"
+            placeholder="真实姓名"
+          />
+          <el-select
+            v-model="listQuery.state"
+            class="filter-item"
+            placeholder="用户状态"
+            clearable
+          >
             <el-option
               v-for="item in stateOptions"
               :key="item.value"
@@ -27,19 +37,44 @@
               :value="item.value"
             />
           </el-select>
-        </el-col>
-        <el-col :span="8">
           <el-button
             v-action="permission.list"
-            class="filter-item"
             type="primary"
             icon="el-icon-search"
             @click="handleSearch"
-          >查找</el-button>
-        </el-col>
-      </el-row>
-    </div>
+            >查找</el-button
+          >
 
+          <div class="toolbar-right">
+            <el-button-group>
+              <el-button
+                v-action="permission.add"
+                type="primary"
+                icon="el-icon-plus"
+                @click="handleCreate"
+                >新增</el-button
+              >
+              <el-button
+                ref="editButton"
+                v-action="permission.edit"
+                type="primary"
+                icon="el-icon-edit"
+                @click="handleSelectionEdit"
+                >编辑</el-button
+              >
+              <el-button
+                ref="delButton"
+                v-action="permission.del"
+                type="primary"
+                icon="el-icon-delete"
+                @click="handleSelectionDel"
+                >删除</el-button
+              >
+            </el-button-group>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
     <div>
       <el-row>
         <el-col :span="4">
@@ -56,62 +91,13 @@
         </el-col>
 
         <el-col :span="20">
-          <div class="table-toolbar">
-            <div class="table-toolbar-left">
-              <el-button
-                v-action="permission.add"
-                class="filter-item"
-                type="primary"
-                icon="el-icon-plus"
-                @click="handleCreate"
-              >新增</el-button>
-              <el-button
-                ref="editButton"
-                v-action="permission.edit"
-                class="filter-item"
-                type="success"
-                icon="el-icon-edit"
-                @click="handleSelectionEdit"
-              >编辑</el-button>
-              <el-button
-                ref="delButton"
-                v-action="permission.del"
-                class="filter-item"
-                type="danger"
-                icon="el-icon-delete"
-                @click="handleSelectionDel"
-              >删除</el-button>
-              <!--   <el-button
-                v-action="permission.download"
-                class="filter-item"
-                type="warning"
-                icon="el-icon-download"
-              >导出</el-button>-->
-            </div>
-            <div class="table-toolbar-right">
-              <el-button-group>
-                <el-button icon="el-icon-refresh" @click="handleSearch" />
-                <el-popover placement="bottom-end" width="150" trigger="click">
-                  <el-button slot="reference" icon="el-icon-s-grid">
-                    <i class="fa fa-caret-down" aria-hidden="true" />
-                  </el-button>
-                  <el-checkbox v-model="allColumnsSelected">全选</el-checkbox>
-                  <el-checkbox
-                    v-for="item in tableColumns"
-                    :key="item.property"
-                    v-model="item.visible"
-                  >{{ item.label }}</el-checkbox>
-                </el-popover>
-              </el-button-group>
-            </div>
-          </div>
           <el-table
             ref="multipleTable"
             :key="tableKey"
             v-loading="listLoading"
             :data="list"
-            style="width: 100%;"
-            height="400"
+            style="width: 100%"
+            height="450"
             border
             highlight-current-row
             @selection-change="handleSelectionChange"
@@ -122,8 +108,18 @@
             <el-table-column prop="vserName" label="真实姓名" width="100" />
             <el-table-column prop="mobile" label="手机" width="150" />
             <!-- <el-table-column prop="email" label="邮箱" width="180"></el-table-column> -->
-            <el-table-column prop="deptName" label="部门/岗位" width="180" :formatter="formatDept" />
-            <el-table-column prop="roleName" label="角色" width="150" :formatter="formatRole" />
+            <el-table-column
+              prop="deptName"
+              label="部门/岗位"
+              width="180"
+              :formatter="formatDept"
+            />
+            <el-table-column
+              prop="roleName"
+              label="角色"
+              width="150"
+              :formatter="formatRole"
+            />
 
             <el-table-column label="禁用/启用" width="85">
               <template slot-scope="scope">
@@ -135,25 +131,27 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="操作" >
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
                   v-action="permission.edit"
                   type="text"
                   size="small"
                   @click="handleEdit(scope.row)"
-                >编辑</el-button>
+                  >编辑</el-button
+                >
                 <el-button
                   v-action="permission.del"
                   type="text"
                   size="small"
                   @click="handleDelete(scope.row)"
-                >删除</el-button>
+                  >删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
           <pagination
-            v-show="total>0"
+            v-show="total > 0"
             :total="total"
             :page.sync="listQuery.page"
             :limit.sync="listQuery.limit"
@@ -162,8 +160,17 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
-      <el-form ref="form" :model="user" :rules="rules" label-width="80px" label-position="right">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+    >
+      <el-form
+        ref="form"
+        :model="user"
+        :rules="rules"
+        label-width="80px"
+        label-position="right"
+      >
         <el-row>
           <el-col :span="12">
             <el-form-item label="账号" prop="name">
@@ -205,7 +212,7 @@
                 v-model="user.jobName"
                 :fetch-suggestions="queryJobSearch"
                 placeholder="请输入内容"
-                style="width:100%"
+                style="width: 100%"
                 @select="handleJobSelect"
               >
                 <template slot-scope="{ item }">
@@ -229,7 +236,8 @@
                   v-for="item in stateOptions"
                   :key="item.value"
                   :label="item.value"
-                >{{ item.label }}</el-radio>
+                  >{{ item.label }}</el-radio
+                >
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -237,7 +245,12 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="角色">
-              <el-select v-model="user.roleIds" multiple placeholder="请选择" style="width:100%">
+              <el-select
+                v-model="user.roleIds"
+                multiple
+                placeholder="请选择"
+                style="width: 100%"
+              >
                 <el-option
                   v-for="item in roles"
                   :key="item.id"
@@ -250,7 +263,7 @@
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmUser">确定</el-button>
       </span>
     </el-dialog>
@@ -264,7 +277,7 @@ import {
   addUser,
   updateUser,
   deleteUser,
-  updateState
+  updateState,
 } from "@/api/permission/user";
 import { departments } from "@/api/permission/department";
 import { jobs } from "@/api/permission/job";
@@ -283,7 +296,7 @@ const defaultUser = {
   jobid: undefined,
   jobName: "",
   deptName: "",
-  roleIds: []
+  roleIds: [],
 };
 
 export default {
@@ -295,7 +308,7 @@ export default {
         list: "user:list",
         add: "user:add",
         edit: "user:edit",
-        del: "user:del"
+        del: "user:del",
       },
       tableKey: 0,
       list: null,
@@ -308,12 +321,12 @@ export default {
         name: "",
         mobile: "",
         deptid: undefined,
-        state: undefined
+        state: undefined,
       },
       searchDeptName: "",
       stateOptions: [
         { label: "禁用", value: 0 },
-        { label: "启用", value: 1 }
+        { label: "启用", value: 1 },
       ],
       user: Object.assign({}, defaultUser),
       allColumnsSelected: [],
@@ -321,7 +334,7 @@ export default {
       multipleSelection: [],
       defaultProps: {
         children: "childrens",
-        label: "name"
+        label: "name",
       },
       departments: [],
       roles: [],
@@ -331,25 +344,40 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 20,
+            message: "长度在 2 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 20,
+            message: "长度在 2 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         vserName: [
           { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "blur",
+          },
         ],
         deptid: [{ required: true, message: "请选择部门", trigger: "change" }],
-        state: [{ required: true, message: "请选择状态", trigger: "change" }]
-      }
+        state: [{ required: true, message: "请选择状态", trigger: "change" }],
+      },
     };
   },
   watch: {
     searchDeptName(val) {
       this.$refs.serchDeptTree.filter(val);
-    }
+    },
   },
   created() {},
   mounted() {
@@ -379,7 +407,7 @@ export default {
     },
     formatRole(row, column) {
       var roleNames = [];
-      row.roles.forEach(role => {
+      row.roles.forEach((role) => {
         roleNames.push(role.name);
       });
       return roleNames.join(" , ");
@@ -393,17 +421,17 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         }
       )
         .then(async () => {
           await updateState({ uid: row.uid, state: row.state });
           this.$message({
             message: text + "成功",
-            type: "success"
+            type: "success",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           row.state = row.state === 0 ? 1 : 0;
         });
@@ -427,7 +455,7 @@ export default {
     },
     diGuiTree(item) {
       // 递归便利树结构
-      item.forEach(item => {
+      item.forEach((item) => {
         item.childrens === "" ||
         item.childrens === undefined ||
         item.childrens === null
@@ -439,7 +467,7 @@ export default {
       return {
         id: node.id,
         label: node.name,
-        children: node.childrens
+        children: node.childrens,
       };
     },
     queryJobSearch(queryString, cb) {
@@ -451,7 +479,7 @@ export default {
       cb(results);
     },
     createJobFilter(queryString) {
-      return jobs => {
+      return (jobs) => {
         return jobs.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
       };
     },
@@ -473,7 +501,7 @@ export default {
       this.user = deepClone(row);
       if (this.user.roles) {
         const roleIds = this.user.roleIds;
-        this.user.roles.forEach(role => {
+        this.user.roles.forEach((role) => {
           roleIds.push(role.id);
         });
       }
@@ -489,7 +517,7 @@ export default {
       this.$message({
         showClose: true,
         message: "保存成功",
-        type: "success"
+        type: "success",
       });
       this.getList();
     },
@@ -509,18 +537,18 @@ export default {
       this.$confirm("确认删除?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           await deleteUser(row.uid);
           this.$message({
             showClose: true,
             message: "删除成功",
-            type: "success"
+            type: "success",
           });
           this.getList();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -551,7 +579,7 @@ export default {
         return;
       }
       this.handleDelete(this.multipleSelection[0]);
-    }
-  }
+    },
+  },
 };
 </script>
