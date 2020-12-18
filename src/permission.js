@@ -18,14 +18,14 @@ router.beforeEach(async (to, from, next) => {
 
 
   const hasToken = store.getters.token
-  if (to.path === '/500') {
-    next()
-  }
   // determine whether the user has logged in
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
+      NProgress.done()
+    } else if (to.path === '/500') {
+      next()
       NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
