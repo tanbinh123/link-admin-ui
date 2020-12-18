@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Vue Link Admin',
-  token:'LinkAdmin-Token',
+  token: 'LinkAdmin-Token',
   layout: 'top',
   /**
    * @type {boolean} true | false
