@@ -1,47 +1,38 @@
 <template>
   <div class="wscn-http404-container">
     <div class="wscn-http404">
-      <div class="pic-404">
-        <img class="pic-404__parent" src="@/assets/404_images/404.png" alt="404">
-        <img class="pic-404__child left" src="@/assets/404_images/404_cloud.png" alt="404">
-        <img class="pic-404__child mid" src="@/assets/404_images/404_cloud.png" alt="404">
-        <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
-      </div>
       <div class="bullshit">
-        <div class="bullshit__oops">OOPS!</div>
-   
-        <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">请检查您输入的网址是否正确，或单击下面的按钮返回主页.</div>
-        <a href="/" class="bullshit__return-home">返回</a>
-        
+        <div class="bullshit__oops">404</div>
+
+        <div class="bullshit__headline">抱歉，你访问的页面不存在...</div>
+        <div class="bullshit__info">请稍后再试，或单击下面的按钮返回主页.</div>
+        <div><a href="/" class="bullshit__return-home">返回</a></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Page404',
+  name: "Page404",
   computed: {
     message() {
-      return '站长说你不能进入这个网页...'
-    }
-  }
-}
+      return "站长说你不能进入这个网页...";
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.wscn-http404-container{
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 80px;
+.wscn-http404-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 80px;
 }
 .wscn-http404 {
-  position: relative;
-  width: 1200px;
-  padding: 0 50px;
-  overflow: hidden;
+  width: 250px;
+  height: 295px;
+  margin: auto;
   .pic-404 {
     position: relative;
     float: left;
@@ -155,7 +146,7 @@ export default {
   }
   .bullshit {
     position: relative;
-    float: left;
+
     width: 300px;
     padding: 30px 0;
     overflow: hidden;

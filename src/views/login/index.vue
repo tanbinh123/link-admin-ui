@@ -10,7 +10,11 @@
     >
       <div class="title">hello !</div>
       <div class="title-tips">欢迎来到Vue-Link-Admin！</div>
-      <el-form-item style="margin-top: 49px;" prop="username" class="login-form-admin">
+      <el-form-item
+        style="margin-top: 49px"
+        prop="username"
+        class="login-form-admin"
+      >
         <span class="svg-container svg-container-admin">
           <svg-icon icon-class="user" />
         </span>
@@ -38,11 +42,19 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" class="login-btn" type="primary" @click="handleLogin">登录</el-button>
+        <el-button
+          :loading="loading"
+          class="login-btn"
+          type="primary"
+          @click="handleLogin"
+          >登录</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -50,6 +62,7 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
+import { encrypt } from "@/utils/rsa-encrypt";
 import SocialSign from "./components/SocialSignin";
 
 export default {
@@ -73,35 +86,35 @@ export default {
     return {
       loginForm: {
         username: "admin",
-        password: "123456"
+        password: "123456",
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: "blur", validator: validateUsername },
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
-        ]
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
       },
       passwordType: "password",
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
     };
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         const query = route.query;
         if (query) {
           this.redirect = query.redirect;
           this.otherQuery = this.getOtherQuery(query);
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
@@ -143,15 +156,18 @@ export default {
       });
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true;
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch("user/login", {
+              username: this.loginForm.username,
+              password: encrypt(this.loginForm.password),
+            })
             .then(() => {
               this.$router.push({
                 path: this.redirect || "/",
-                query: this.otherQuery
+                query: this.otherQuery,
               });
               this.loading = false;
             })
@@ -171,7 +187,7 @@ export default {
         }
         return acc;
       }, {});
-    }
+    },
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)
@@ -190,7 +206,7 @@ export default {
     //     }
     //   }
     // }
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
