@@ -1,14 +1,18 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <div
+      v-if="device === 'mobile' && sidebar.opened"
+      class="drawer-bg"
+      @click="handleClickOutside"
+    />
     <sidebar :class="sidebarClass" />
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+    <div :class="{ hasTagsView: needTagsView }" class="main-container">
+      <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-      <footers/>
+      <footers v-if="showFooter" />
       <right-panel v-if="showSettings">
         <settings />
       </right-panel>
@@ -18,7 +22,14 @@
 
 <script>
 import RightPanel from "@/components/RightPanel";
-import { AppMain, Navbar, Settings, Sidebar, TagsView,Footers } from "./components";
+import {
+  AppMain,
+  Navbar,
+  Settings,
+  Sidebar,
+  TagsView,
+  Footers,
+} from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
 
@@ -31,18 +42,19 @@ export default {
     Settings,
     Sidebar,
     TagsView,
-    Footers
+    Footers,
   },
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
-      sidebar: state => state.app.sidebar,
-      device: state => state.app.device,
-      showSettings: state => state.app.showSettings,
-      needTagsView: state => state.app.tagsView,
-      fixedHeader: state => state.app.fixedHeader,
-      sidebarColor: state => state.app.sidebarColor,
-      colorWeak: state => state.app.colorWeak
+      sidebar: (state) => state.app.sidebar,
+      device: (state) => state.app.device,
+      showSettings: (state) => state.app.showSettings,
+      showFooter: (state) => state.app.showFooter,
+      needTagsView: (state) => state.app.tagsView,
+      fixedHeader: (state) => state.app.fixedHeader,
+      sidebarColor: (state) => state.app.sidebarColor,
+      colorWeak: (state) => state.app.colorWeak,
     }),
     classObj() {
       return {
@@ -57,15 +69,15 @@ export default {
       return {
         "sidebar-container": true,
         "layout-sidebar-dark": this.sidebarColor == "dark",
-        "layout-sidebar-light": this.sidebarColor == "light"
+        "layout-sidebar-light": this.sidebarColor == "light",
       };
-    }
+    },
   },
   methods: {
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
-    }
-  }
+    },
+  },
 };
 </script>
 

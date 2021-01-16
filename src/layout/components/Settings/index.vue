@@ -33,7 +33,7 @@
       <h3 class="drawer-title">系统布局配置</h3>
 
       <div class="drawer-item">
-        <span>开启 Tags-View</span>
+        <span>开启 多页签</span>
         <el-switch v-model="tagsView" class="drawer-switch" />
       </div>
 
@@ -43,8 +43,12 @@
       </div>
 
       <div class="drawer-item">
-        <span>侧边栏 Logo</span>
+        <span>菜单头</span>
         <el-switch v-model="sidebarLogo" class="drawer-switch" />
+      </div>
+      <div class="drawer-item">
+        <span>页脚</span>
+        <el-switch v-model="showFooter" class="drawer-switch" />
       </div>
     </div>
     <el-divider></el-divider>
@@ -94,6 +98,17 @@ export default {
       set(val) {
         this.$store.dispatch("app/changeSetting", {
           key: "sidebarLogo",
+          value: val
+        });
+      }
+    },
+    showFooter: {
+      get() {
+        return this.$store.getters.showFooter;
+      },
+      set(val) {
+        this.$store.dispatch("app/changeSetting", {
+          key: "showFooter",
           value: val
         });
       }

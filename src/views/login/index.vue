@@ -8,8 +8,8 @@
       class="login-form"
       label-position="left"
     >
-      <div class="title">hello !</div>
-      <div class="title-tips">欢迎来到Vue-Link-Admin！</div>
+      <!-- <div class="title">hello !</div> -->
+      <div class="title-tips">欢迎使用 Link Admin！</div>
       <el-form-item
         style="margin-top: 49px"
         prop="username"

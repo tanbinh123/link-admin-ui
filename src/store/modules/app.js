@@ -13,6 +13,7 @@ const state = {
   size: localStorage.getItem('size') || size,
   theme: variables.theme,
   showSettings: localStorage.getItem('showSettings') !== null ? JSON.parse(localStorage.getItem('showSettings')) : showSettings,
+  showFooter: localStorage.getItem('showFooter') !== null ? JSON.parse(localStorage.getItem('showFooter')) : showSettings,
   tagsView: localStorage.getItem('tagsView') !== null ? JSON.parse(localStorage.getItem('tagsView')) : tagsView,
   fixedHeader: localStorage.getItem('fixedHeader') !== null ? JSON.parse(localStorage.getItem('fixedHeader')) : fixedHeader,
   sidebarLogo: localStorage.getItem('sidebarLogo') !== null ? JSON.parse(localStorage.getItem('sidebarLogo')) : sidebarLogo,

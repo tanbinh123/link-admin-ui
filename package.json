@@ -1,6 +1,6 @@
 {
-  "name": "vue-link-admin",
-  "version": "4.2.5",
+  "name": "link-admin-ui",
+  "version": "4.2.6",
   "description": "CommonJs package",
   "author": "xyy12611@163.com",
   "license": "MIT",
@@ -20,10 +20,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/252956/vue-link-admin.git"
+    "url": "https://github.com/252956/link-admin-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/252956/vue-link-admin/issues"
+    "url": "https://github.com/252956/link-admin-ui/issues"
   },
   "dependencies": {
     "@antv/g2": "^4.0.15",

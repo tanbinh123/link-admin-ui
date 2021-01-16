@@ -1,36 +1,32 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }}</h1>
-      </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }}</h1>
+      <router-link class="sidebar-logo-link" to="/">
+        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <h1 v-if="!collapse" class="sidebar-title">{{ title }}</h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
-import avatarGif from '@/assets/logo.png'
-import settings from '@/settings'
+import avatarGif from "@/assets/logo.png";
+import settings from "@/settings";
 export default {
-  name: 'SidebarLogo',
+  name: "SidebarLogo",
   props: {
     collapse: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       title: settings.title,
-      logo: avatarGif
-    }
-  }
-}
+      logo: avatarGif,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -42,5 +38,4 @@ export default {
 .sidebarLogoFade-leave-to {
   opacity: 0;
 }
-
 </style>

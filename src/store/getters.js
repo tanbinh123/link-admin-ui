@@ -5,6 +5,7 @@ const getters = {
   device: state => state.app.device,
   theme: state => state.app.theme,
   showSettings: state => state.app.showSettings,
+  showFooter: state => state.app.showFooter,
   tagsView: state => state.app.tagsView,
   fixedHeader: state => state.app.fixedHeader,
   sidebarLogo: state => state.app.sidebarLogo,

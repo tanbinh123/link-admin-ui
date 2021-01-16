@@ -1,7 +1,7 @@
 #app {
 
   .sidebar-container {
-    background-color: $menuBg-dark;
+    background-color: $menuBg-light;
    // box-shadow: 8px 0 8px 0 rgba(29,35,41,.05);
     box-shadow: 1px 0 5px 0 rgba(0, 0, 0, 0.12);
     transition: width 0.28s;
@@ -16,36 +16,32 @@
     overflow: hidden;
     
     .sidebar-logo-container {
-      background: $menuBg-dark ;
+      background: $menuBg-light ;
       position: relative;
       display: flex;
       align-items: center;
       padding: 10px 10px;
       //line-height: 32px;
-      cursor: pointer;
-      transition: padding .2s;
+   
       & .sidebar-logo-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        //min-height: 32px;
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+        height: 36px;
         & .sidebar-logo {
           display: inline-block;
-          height: 36px;
+          height: 34px;
           vertical-align: middle;
-          transition: height .2s;
         }
         & .sidebar-title {
           display: inline-block;
          // height: 32px;
           margin: 0 0 0 12px;
-          color: #fff;
           font-weight: 600;
           font-size: 16px;
           //line-height: 32px;
           vertical-align: middle;
           animation: fade-in;
-          animation-duration: .2s;
         }
       }
     
@@ -58,7 +54,7 @@
       border: none;
       height: 100%;
       width: 100% !important;
-      background-color: $menuBg-dark !important;
+      background-color: $menuBg-light !important;
       // &.el-menu-item .submenu-title-noDropdown{
       //   color: $menuText !important;
       // }
@@ -67,35 +63,35 @@
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
-      color: $menuText-dark !important;
+      color: $menuText-light !important;
       &:hover {
-        background-color: $menuHover-dark !important;
+        background-color: $menuHover-light !important;
       }
       &:focus{
-        background-color: $menuBg-dark !important;
+        background-color: $menuBg-light !important;
       }
       &.is-active{
-        color: $subMenuActiveText-dark !important;
+        color: $subMenuActiveText-light !important;
       }
     }
 
     .is-active>.el-submenu__title {
-      color: $subMenuActiveText-dark !important;
+      color: $subMenuActiveText-light !important;
     }
    
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-      background-color: $subMenuBg-dark !important;
-      color: $menuText-dark !important;
+      background-color: $subMenuBg-light !important;
+      color: $menuText-light !important;
       &:hover {
-        background-color: $subMenuHover-dark !important;
+        background-color: $subMenuHover-light !important;
       }
       &:focus{
         //background-color: $subMenuHover-dark !important;
       }
       &.is-active{
-        color: $subMenuActiveText-dark !important;
+        color: $subMenuActiveText-light !important;
       }
     }
 
@@ -189,7 +185,7 @@
       background: $menuBg-light;
       & .sidebar-logo-link {
         & .sidebar-title {
-          color: black;
+          //color: black;
         }
       }
     }

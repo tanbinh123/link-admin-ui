@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Vue Link Admin',
+  title: 'Link Admin',
   token: 'LinkAdmin-Token',
   layout: 'top',
   /**
@@ -29,6 +29,10 @@ module.exports = {
    * 
    */
   sidebarColor: 'light',
+  /**
+   * 
+   */
+  showFooter:true,
   /**
    * 
    */
