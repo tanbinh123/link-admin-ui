@@ -1,17 +1,25 @@
 <template>
   <div class="app-container">
-    <div style="max-width:600px;margin-left: 80px;">
+    <div style="max-width: 600px; margin-left: 80px">
       <el-row :gutter="20">
         <el-col :span="20">
-          <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable />
+          <el-input
+            v-model="filterText"
+            placeholder="输入关键字进行过滤"
+            clearable
+          />
         </el-col>
         <el-col :span="4">
-          <el-button class="filter-item" type="primary" @click="() => handleCreate()">
+          <el-button
+            class="filter-item"
+            type="primary"
+            @click="() => handleCreate()"
+          >
             <i class="el-icon-plus" /> 添加
           </el-button>
         </el-col>
       </el-row>
-      <el-row style="padding-top:20px">
+      <el-row style="padding-top: 20px">
         <el-col>
           <el-tree
             ref="tree"
@@ -31,35 +39,55 @@
                   type="text"
                   size="mini"
                   @click="() => handleCreate(data)"
-                >添加子项</el-button>
+                  >添加子项</el-button
+                >
                 <el-button
-                   v-action="curdPermission.edit"
+                  v-action="curdPermission.edit"
                   type="text"
                   size="mini"
-                  @click="() => handleEdit(node,data)"
-                >编辑</el-button>
+                  @click="() => handleEdit(node, data)"
+                  >编辑</el-button
+                >
                 <el-button
                   v-action="curdPermission.del"
                   type="text"
                   size="mini"
                   @click="() => handleDelete(data)"
-                >删除</el-button>
+                  >删除</el-button
+                >
               </span>
             </span>
           </el-tree>
         </el-col>
       </el-row>
     </div>
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'" width="600px">
-      <el-form ref="form" :inline="true" :rules="rules" size="small" label-width="80px">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+      width="600px"
+    >
+      <el-form
+        ref="form"
+        :inline="true"
+        :rules="rules"
+        size="small"
+        label-width="80px"
+      >
         <el-form-item label="权限类型">
-          <el-radio-group v-model="permission.types" size="mini" style="width: 178px">
+          <el-radio-group
+            v-model="permission.types"
+            size="mini"
+            style="width: 178px"
+          >
             <el-radio-button label="0">目录</el-radio-button>
             <el-radio-button label="1">菜单</el-radio-button>
             <el-radio-button label="2">按钮</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="permission.types.toString() !== '2'" label="菜单图标">
+        <el-form-item
+          v-show="permission.types.toString() !== '2'"
+          label="菜单图标"
+        >
           <el-popover
             placement="bottom-start"
             width="450"
@@ -70,7 +98,7 @@
             <el-input
               slot="reference"
               v-model="permission.icon"
-              style="width: 450px;"
+              style="width: 450px"
               placeholder="点击选择图标"
               clearable
             >
@@ -79,7 +107,7 @@
                 slot="prefix"
                 :icon-class="permission.icon"
                 class="el-input__icon"
-                style="height: 32px;width: 16px;"
+                style="height: 32px; width: 16px"
               />
               <i v-else slot="prefix" class="el-icon-search el-input__icon" />
             </el-input>
@@ -103,27 +131,53 @@
             <el-radio-button label="0">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="permission.types.toString() !== '2'" label="菜单标题">
+        <el-form-item
+          v-show="permission.types.toString() !== '2'"
+          label="菜单标题"
+        >
           <el-input v-model="permission.name" placeholder="菜单标题" />
         </el-form-item>
-        <el-form-item v-show="permission.types.toString() == '2'" label="按钮名称">
-          <el-input v-model="permission.name" placeholder="按钮名称" style="width: 178px;" />
+        <el-form-item
+          v-show="permission.types.toString() == '2'"
+          label="按钮名称"
+        >
+          <el-input
+            v-model="permission.name"
+            placeholder="按钮名称"
+            style="width: 178px"
+          />
         </el-form-item>
-        <el-form-item v-show="permission.types.toString() !== '0'" label="权限标识">
-          <el-input v-model="permission.permissionFlag" placeholder="权限标识" style="width: 178px;" />
-        </el-form-item>
-
-        <el-form-item label="路由地址" v-show="permission.types.toString() !== '2'">
-          <el-input v-model="permission.url" placeholder="路由地址" style="width: 450px;" />
+        <el-form-item
+          v-show="permission.types.toString() == '2'"
+          label="权限标识"
+        >
+          <el-input
+            v-model="permission.permissionFlag"
+            placeholder="权限标识"
+            style="width: 178px"
+          />
         </el-form-item>
 
         <el-form-item
-          v-show="permission.i_frame == false && permission.types.toString() === '1'"
+          label="路由地址"
+          v-show="permission.types.toString() !== '2'"
+        >
+          <el-input
+            v-model="permission.url"
+            placeholder="路由地址"
+            style="width: 450px"
+          />
+        </el-form-item>
+
+        <el-form-item
+          v-show="
+            permission.i_frame == false && permission.types.toString() === '1'
+          "
           label="组件名称"
         >
           <el-input
             v-model="permission.component_name"
-            style="width: 178px;"
+            style="width: 178px"
             placeholder="匹配组件内Name字段"
           />
         </el-form-item>
@@ -133,19 +187,25 @@
             :min="0"
             :max="999"
             controls-position="right"
-            style="width: 178px;"
+            style="width: 178px"
           />
         </el-form-item>
         <el-form-item
-          v-show="permission.i_frame == false && permission.types.toString() === '1'"
+          v-show="
+            permission.i_frame == false && permission.types.toString() === '1'
+          "
           label="组件路径"
         >
-          <el-input v-model="permission.component_path" style="width: 450px;" placeholder="组件路径" />
+          <el-input
+            v-model="permission.component_path"
+            style="width: 450px"
+            placeholder="组件路径"
+          />
         </el-form-item>
         <el-form-item label="上级权限">
           <treeselect
             v-model="permission.parentId"
-            style="width: 450px;"
+            style="width: 450px"
             :options="permissions"
             :normalizer="normalizer"
             placeholder="选择上级权限"
@@ -153,7 +213,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmPermission">确定</el-button>
       </span>
     </el-dialog>
@@ -170,7 +230,7 @@ import {
   permissions,
   addPermission,
   updatePermission,
-  deletePermission
+  deletePermission,
 } from "@/api/permission/permission";
 import { deepClone } from "@/utils";
 const defaultPermission = {
@@ -187,7 +247,7 @@ const defaultPermission = {
   icon: "",
   cache: 0,
   hidden: 0,
-  i_frame: 0
+  i_frame: 0,
 };
 export default {
   name: "Permission",
@@ -199,11 +259,11 @@ export default {
         list: "permission:list",
         add: "permission:add",
         edit: "permission:edit",
-        del: "permission:del"
+        del: "permission:del",
       },
       defaultProps: {
         children: "childrens",
-        label: "name"
+        label: "name",
       },
       permission: Object.assign({}, defaultPermission),
       permissions: [],
@@ -212,23 +272,28 @@ export default {
       filterText: "",
       rules: {
         types: [
-          { required: true, message: "请选择权限类型", trigger: "change" }
+          { required: true, message: "请选择权限类型", trigger: "change" },
         ],
         name: [
           { required: true, message: "请输入权限名", trigger: "blur" },
-          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 20,
+            message: "长度在 2 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         url: [{ required: true, message: "请输入路由地址", trigger: "blur" }],
         parentId: [
-          { required: true, message: "请选择上级权限", trigger: "change" }
-        ]
-      }
+          { required: true, message: "请选择上级权限", trigger: "change" },
+        ],
+      },
     };
   },
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
   created() {
     this.getPermissions();
@@ -246,7 +311,7 @@ export default {
     },
     diGuiTree(item) {
       // 递归便利树结构
-      item.forEach(item => {
+      item.forEach((item) => {
         item.childrens === "" ||
         item.childrens === undefined ||
         item.childrens === null
@@ -258,7 +323,7 @@ export default {
       return {
         id: node.id,
         label: node.name,
-        children: node.childrens
+        children: node.childrens,
       };
     },
     selected(name) {
@@ -293,7 +358,7 @@ export default {
       this.$message({
         showClose: true,
         message: "保存成功",
-        type: "success"
+        type: "success",
       });
       this.getPermissions();
     },
@@ -301,22 +366,22 @@ export default {
       this.$confirm("确认删除?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(async () => {
           await deletePermission(data.id);
           this.$message({
             showClose: true,
             message: "删除成功",
-            type: "success"
+            type: "success",
           });
           this.getPermissions();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
