@@ -20,9 +20,8 @@
       position: relative;
       display: flex;
       align-items: center;
-      padding: 10px 10px;
-      //line-height: 32px;
-   
+      padding: 10px 0 0 12px;
+      height: 48px;
       & .sidebar-logo-link {
         display: inline-block;
         width: 100%;
@@ -30,23 +29,21 @@
         height: 36px;
         & .sidebar-logo {
           display: inline-block;
-          height: 34px;
+          height: 32px;
           vertical-align: middle;
         }
         & .sidebar-title {
           display: inline-block;
-         // height: 32px;
           margin: 0 0 0 12px;
           font-weight: 600;
           font-size: 16px;
-          //line-height: 32px;
           vertical-align: middle;
           animation: fade-in;
         }
       }
     
       &.collapse {
-        padding: 10px 10px;
+        //padding: 10px 10px;
       }
     }
 
