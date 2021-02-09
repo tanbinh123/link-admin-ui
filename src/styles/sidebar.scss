@@ -14,31 +14,32 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    
     .sidebar-logo-container {
       background: $menuBg-light ;
-      position: relative;
+      padding-left: 12px;
+      height: 48px;
       display: flex;
       align-items: center;
-      padding: 10px 0 0 12px;
-      height: 48px;
       & .sidebar-logo-link {
-        display: inline-block;
-        width: 100%;
-        overflow: hidden;
-        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
         & .sidebar-logo {
           display: inline-block;
           height: 32px;
           vertical-align: middle;
         }
         & .sidebar-title {
-          display: inline-block;
-          margin: 0 0 0 12px;
           font-weight: 600;
           font-size: 16px;
-          vertical-align: middle;
+          -webkit-animation: fade-in;
           animation: fade-in;
+          vertical-align: middle;
+          display: inline-block;
+          height: 32px;
+          margin: 0 0 0 12px;
+          line-height: 32px;
         }
       }
     
