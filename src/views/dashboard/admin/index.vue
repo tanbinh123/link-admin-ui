@@ -1,10 +1,8 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner class="github-corner" />
-
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <el-row style="background: #fff; padding: 16px 16px 0; margin-bottom: 24px">
       <line-chart :chart-data="lineChartData" />
     </el-row>
 
@@ -16,25 +14,45 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
-         <bar-chart />
+          <bar-chart />
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
-          
-           <pie-chart />
+          <pie-chart />
         </div>
       </el-col>
     </el-row>
 
     <el-row :gutter="8">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
+      <el-col
+        :xs="{ span: 24 }"
+        :sm="{ span: 24 }"
+        :md="{ span: 24 }"
+        :lg="{ span: 12 }"
+        :xl="{ span: 12 }"
+        style="padding-right: 8px; margin-bottom: 24px"
+      >
         <transaction-table />
       </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
+      <el-col
+        :xs="{ span: 24 }"
+        :sm="{ span: 12 }"
+        :md="{ span: 12 }"
+        :lg="{ span: 6 }"
+        :xl="{ span: 6 }"
+        style="margin-bottom: 24px"
+      >
         <todo-list />
       </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
+      <el-col
+        :xs="{ span: 24 }"
+        :sm="{ span: 12 }"
+        :md="{ span: 12 }"
+        :lg="{ span: 6 }"
+        :xl="{ span: 6 }"
+        style="margin-bottom: 24px"
+      >
         <box-card />
       </el-col>
     </el-row>
@@ -42,46 +60,45 @@
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
-import PanelGroup from './components/PanelGroup'
-import LineChart from './components/LineChart'
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
-import TransactionTable from './components/TransactionTable'
-import TodoList from './components/TodoList'
-import BoxCard from './components/BoxCard'
+import GithubCorner from "@/components/GithubCorner";
+import PanelGroup from "./components/PanelGroup";
+import LineChart from "./components/LineChart";
+import RaddarChart from "./components/RaddarChart";
+import PieChart from "./components/PieChart";
+import BarChart from "./components/BarChart";
+import TransactionTable from "./components/TransactionTable";
+import TodoList from "./components/TodoList";
+import BoxCard from "./components/BoxCard";
 
 const lineChartData = [
-  { month: 'Jan', city: 'Tokyo', temperature: 7 },
-  { month: 'Jan', city: 'London', temperature: 3.9 },
-  { month: 'Feb', city: 'Tokyo', temperature: 6.9 },
-  { month: 'Feb', city: 'London', temperature: 4.2 },
-  { month: 'Mar', city: 'Tokyo', temperature: 9.5 },
-  { month: 'Mar', city: 'London', temperature: 5.7 },
-  { month: 'Apr', city: 'Tokyo', temperature: 14.5 },
-  { month: 'Apr', city: 'London', temperature: 8.5 },
-  { month: 'May', city: 'Tokyo', temperature: 18.4 },
-  { month: 'May', city: 'London', temperature: 11.9 },
-  { month: 'Jun', city: 'Tokyo', temperature: 21.5 },
-  { month: 'Jun', city: 'London', temperature: 15.2 },
-  { month: 'Jul', city: 'Tokyo', temperature: 25.2 },
-  { month: 'Jul', city: 'London', temperature: 17 },
-  { month: 'Aug', city: 'Tokyo', temperature: 26.5 },
-  { month: 'Aug', city: 'London', temperature: 16.6 },
-  { month: 'Sep', city: 'Tokyo', temperature: 23.3 },
-  { month: 'Sep', city: 'London', temperature: 14.2 },
-  { month: 'Oct', city: 'Tokyo', temperature: 18.3 },
-  { month: 'Oct', city: 'London', temperature: 10.3 },
-  { month: 'Nov', city: 'Tokyo', temperature: 13.9 },
-  { month: 'Nov', city: 'London', temperature: 6.6 },
-  { month: 'Dec', city: 'Tokyo', temperature: 9.6 },
-  { month: 'Dec', city: 'London', temperature: 4.8 },
+  { month: "Jan", city: "Tokyo", temperature: 7 },
+  { month: "Jan", city: "London", temperature: 3.9 },
+  { month: "Feb", city: "Tokyo", temperature: 6.9 },
+  { month: "Feb", city: "London", temperature: 4.2 },
+  { month: "Mar", city: "Tokyo", temperature: 9.5 },
+  { month: "Mar", city: "London", temperature: 5.7 },
+  { month: "Apr", city: "Tokyo", temperature: 14.5 },
+  { month: "Apr", city: "London", temperature: 8.5 },
+  { month: "May", city: "Tokyo", temperature: 18.4 },
+  { month: "May", city: "London", temperature: 11.9 },
+  { month: "Jun", city: "Tokyo", temperature: 21.5 },
+  { month: "Jun", city: "London", temperature: 15.2 },
+  { month: "Jul", city: "Tokyo", temperature: 25.2 },
+  { month: "Jul", city: "London", temperature: 17 },
+  { month: "Aug", city: "Tokyo", temperature: 26.5 },
+  { month: "Aug", city: "London", temperature: 16.6 },
+  { month: "Sep", city: "Tokyo", temperature: 23.3 },
+  { month: "Sep", city: "London", temperature: 14.2 },
+  { month: "Oct", city: "Tokyo", temperature: 18.3 },
+  { month: "Oct", city: "London", temperature: 10.3 },
+  { month: "Nov", city: "Tokyo", temperature: 13.9 },
+  { month: "Nov", city: "London", temperature: 6.6 },
+  { month: "Dec", city: "Tokyo", temperature: 9.6 },
+  { month: "Dec", city: "London", temperature: 4.8 },
 ];
 
-
 export default {
-  name: 'DashboardAdmin',
+  name: "DashboardAdmin",
   components: {
     GithubCorner,
     PanelGroup,
@@ -91,24 +108,24 @@ export default {
     BarChart,
     TransactionTable,
     TodoList,
-    BoxCard
+    BoxCard,
   },
   data() {
     return {
-      lineChartData: lineChartData
-    }
+      lineChartData: lineChartData,
+    };
   },
   methods: {
     handleSetLineChartData(type) {
       //this.lineChartData = lineChartData[type]
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 32px;
+  padding: 24px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
@@ -122,11 +139,11 @@ export default {
   .chart-wrapper {
     background: #fff;
     padding: 16px 16px 0;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 }
 
-@media (max-width:1024px) {
+@media (max-width: 1024px) {
   .chart-wrapper {
     padding: 8px;
   }

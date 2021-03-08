@@ -2,8 +2,8 @@
 
   .sidebar-container {
     background-color: $menuBg-light;
-   // box-shadow: 8px 0 8px 0 rgba(29,35,41,.05);
     box-shadow: 1px 0 5px 0 rgba(0, 0, 0, 0.12);
+    //box-shadow: 2px 0 8px 0 rgba(29,35,41,.05);
     transition: width 0.28s;
     width: $sideBarWidth !important;
     height: 100%;

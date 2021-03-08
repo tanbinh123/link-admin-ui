@@ -2,10 +2,10 @@
   <div class="footer">
     <div class="links">
       <a href="https://cn.vuejs.org/" target="_blank">Vue</a>
-      <a href="https://github.com/252956/link-admin-ui" target="_blank"
-        >Github</a
+      <a href="https://gitee.com/xyy12611/link-admin-ui" target="_blank"
+        >Gitee</a
       >
-      <a href="https://github.com/ElemeFE/element" target="_blank">Element</a>
+      <a href="https://element.eleme.io" target="_blank">Element</a>
     </div>
     <div class="copyright">Copyright © 2021 252956</div>
   </div>
